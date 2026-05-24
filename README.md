@@ -1,58 +1,79 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Aerolíneas Proyecto FDB
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema web de gestión para una aerolínea desarrollado con Laravel. El proyecto está orientado a una landing page responsiva y a la administración de operaciones internas.
 
-## About Laravel
+## Descripción
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+La aplicación está pensada para centralizar información y procesos de la aerolínea en cuatro módulos principales:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Pasajeros y clientes
+- Operaciones de vuelo
+- Flotilla
+- Personal
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Tecnologías
 
-## Learning Laravel
+- Laravel
+- Blade
+- Tailwind CSS
+- Vite
+- Node.js y npm
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Requisitos
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP compatible con Laravel (Usando laragon ó xampp)
+    -Versiones Compatibles: 8.2, 8.3
+- Composer (Instalado por defecto con laragon, requiere descarga si se usa xammp)
+- Node.js
+- npm
+- Servidor local como Laragon, XAMPP o similar
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Instalación
 
-## Agentic Development
+1. Clonar el repositorio.
+2. Instalar dependencias de PHP con Composer.
+3. Instalar dependencias de frontend con npm.
+4. Copiar el archivo `.env.example` a `.env`.
+5. Generar la clave de la aplicación.
+6. Configurar la base de datos en el archivo `.env`.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Ejecución en local
 
-```bash
-composer require laravel/boost --dev
+- Levantar el servidor de Laravel con `php artisan serve` (Si no se tiene laragon, o para usar ngrok y poder visualizar en mobiles).
+- Ejecutar Vite en modo desarrollo con `npm run dev`.
+- Si necesitas generar assets para producción, usar `npm run build`.
 
-php artisan boost:install
-```
+## Base de datos
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+El nombre definitivo de la base de datos aún está pendiente, ya que será definido mas tarde del proyecto.
 
-## Contributing
+Cuando se confirme, se deberá actualizar el archivo `.env` con estos datos:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- `DB_CONNECTION`
+- `DB_HOST`
+- `DB_PORT`
+- `DB_DATABASE`
+- `DB_USERNAME` 
+- `DB_PASSWORD`
 
-## Code of Conduct
+## Estructura general
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- `app/`: lógica principal de la aplicación
+- `resources/views/`: vistas Blade
+- `resources/css/`: estilos de la interfaz
+- `resources/js/`: scripts del frontend
+- `routes/`: rutas de la aplicación
+- `database/`: migraciones, seeders y factories
 
-## Security Vulnerabilities
+## Notas
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- La interfaz usa Tailwind CSS.
+- El proyecto depende de Vite para compilar los assets del frontend.
+- Antes de ejecutar la vista en producción, es necesario generar el build de frontend.
 
-## License
+## Pendientes
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Definir el nombre de la base de datos.
+- Crear los módulos funcionales de la plataforma.
+- Conectar la landing page con las rutas reales del sistema.
+- Cambiar el diseño de la landing page
