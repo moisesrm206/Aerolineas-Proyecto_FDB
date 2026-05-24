@@ -9,3 +9,74 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background:
+            radial-gradient(circle at top left, rgba(84, 50, 158, 0.32), transparent 28%),
+            radial-gradient(circle at right 18%, rgba(16, 185, 129, 0.16), transparent 24%),
+            linear-gradient(180deg, #120b25 0%, #0b0815 100%);
+    }
+}
+
+@layer components {
+    .glass-panel {
+        background: rgba(20, 12, 36, 0.72);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.36);
+        backdrop-filter: blur(20px);
+    }
+
+    .glow-ring {
+        position: absolute;
+        inset: auto;
+        border-radius: 9999px;
+        filter: blur(12px);
+        opacity: 0.7;
+    }
+
+    .section-label {
+        letter-spacing: 0.26em;
+        text-transform: uppercase;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #a78bfa;
+    }
+
+    .section-title {
+        font-size: clamp(2rem, 4vw, 3.6rem);
+        line-height: 1.05;
+        font-weight: 700;
+        color: #f5f3ff;
+    }
+
+    .section-copy {
+        color: rgba(233, 228, 255, 0.74);
+        font-size: 1.05rem;
+        line-height: 1.75;
+    }
+
+    .primary-button {
+        background: linear-gradient(135deg, #4f46e5, #22c55e);
+        box-shadow: 0 14px 30px rgba(79, 70, 229, 0.28);
+    }
+
+    .primary-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 18px 38px rgba(79, 70, 229, 0.36);
+    }
+
+    .outline-button {
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        color: #f5f3ff;
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .outline-button:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+}
