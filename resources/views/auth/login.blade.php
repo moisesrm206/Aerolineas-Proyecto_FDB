@@ -1,4 +1,4 @@
-@extends('auth.layout', ['title' => 'Iniciar sesión | AeroControl'])
+@extends('templates.layout', ['title' => 'Iniciar sesión | AeroControl'])
 
 @section('content')
     <div class="grid w-full max-w-6xl gap-8 lg:grid-cols-[0.95fr_1.05fr]">
