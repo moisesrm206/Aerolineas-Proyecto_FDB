@@ -33,7 +33,7 @@ La aplicación está pensada para centralizar información y procesos de la aero
 1. Clonar el repositorio.
 2. Instalar dependencias de PHP con Composer.
 3. Instalar dependencias de frontend con npm.
-4. Copiar el archivo `.env.example` a `.env`.
+4. Copiar el archivo `.env.example` a `.env`. (si no existe duplica '.env.example') 
 5. Generar la clave de la aplicación.
 6. Configurar la base de datos en el archivo `.env`.
 
