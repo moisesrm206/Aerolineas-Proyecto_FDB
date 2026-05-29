@@ -2,31 +2,41 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    protected $table = 'users';
+    protected $primaryKey = 'id_user';
+    public $timestamps = false;
+
+    protected $fillable = [
+        'nombre',
+        'email',
+        'telefono',
+        'contrasenna',
+        'rol',
+    ];
+
+    protected $hidden = [
+        'contrasenna',
+    ];
+
+    protected $casts = [
+        // no special casts needed by default
+    ];
+
+    public function pasajero()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasOne(Pasajero::class, 'id_user', 'id_user');
+    }
+
+    public function tripulacion()
+    {
+        return $this->hasOne(Tripulacion::class, 'id_user', 'id_user');
     }
 }
