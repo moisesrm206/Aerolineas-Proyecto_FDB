@@ -1,0 +1,162 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UpdateRequest;
+use App\Models\Pasajero;
+use App\Models\Tripulacion;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
+class AccountController extends Controller
+{
+    public function showLogin()
+    {
+        return view('access.login');
+    }
+
+    public function showRegister()
+    {
+        return view('access.register');
+    }
+
+    public function login(\App\Http\Requests\LoginRequest $request): RedirectResponse
+    {
+        $credentials = [
+            'email' => $request->validated('email'),
+            'password' => $request->validated('password'),
+        ];
+
+        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+            return back()
+                ->withErrors(['email' => 'Las credenciales no son válidas.'])
+                ->onlyInput('email');
+        }
+
+        $request->session()->regenerate();
+
+        return redirect()->route('panel.index');
+    }
+
+    public function register(\App\Http\Requests\RegisterRequest $request): RedirectResponse
+    {
+        $data = $request->validated();
+
+        $user = DB::transaction(function () use ($data) {
+            $user = User::create([
+                'nombre' => $data['name'],
+                'email' => $data['email'],
+                'telefono' => $data['phone'] ?? null,
+                'contrasenna' => Hash::make($data['password']),
+                'rol' => 'pasajero',
+            ]);
+
+            Pasajero::create([
+                'id_user' => $user->id_user,
+                'nombre_completo' => $data['name'],
+                'pasaporte' => $data['passport_number'],
+                'nacionalidad' => $data['nationality'],
+            ]);
+
+            return $user;
+        });
+
+        Auth::login($user);
+        request()->session()->regenerate();
+
+        return redirect()->route('panel.index');
+    }
+
+    public function update(\App\Http\Requests\UpdateRequest $request): RedirectResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+        $data = $request->validated();
+
+        if (! empty($data['password'])) {
+            if (! Hash::check($data['current_password'], $user->contrasenna)) {
+                return back()->withErrors(['current_password' => 'La contraseña actual no coincide.']);
+            }
+
+            $user->contrasenna = Hash::make($data['password']);
+        }
+
+        DB::transaction(function () use ($user, $data): void {
+            $user->nombre = $data['name'];
+            $user->email = $data['email'];
+            $user->telefono = $data['phone'] ?? null;
+            $user->save();
+
+            if ($user->rol === 'pasajero') {
+                Pasajero::updateOrCreate(
+                    ['id_user' => $user->id_user],
+                    [
+                        'nombre_completo' => $data['name'],
+                        'pasaporte' => $data['passport_number'],
+                        'nacionalidad' => $data['nationality'],
+                    ]
+                );
+            }
+
+            if ($user->rol === 'tripulacion') {
+                Tripulacion::updateOrCreate(
+                    ['id_user' => $user->id_user],
+                    [
+                        'nombre_completo' => $data['name'],
+                        'num_licencia' => $data['license_number'],
+                    ]
+                );
+            }
+        });
+
+        return back()->with('status', 'Cuenta actualizada correctamente.');
+    }
+
+    public function destroy(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'current_password' => ['required', 'string'],
+        ]);
+
+        /** @var User $user */
+        $user = $request->user();
+
+        if (! Hash::check($request->input('current_password'), $user->contrasenna)) {
+            return back()->withErrors(['current_password' => 'La contraseña actual no coincide.']);
+        }
+
+        DB::transaction(function () use ($user): void {
+            if ($user->rol === 'pasajero' && $user->pasajero) {
+                $user->pasajero->update(['id_user' => null]);
+            }
+
+            if ($user->rol === 'tripulacion' && $user->tripulacion) {
+                $user->tripulacion->update(['id_user' => null]);
+            }
+
+            User::destroy($user->id_user);
+        });
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('home');
+    }
+
+    public function logout(Request $request): RedirectResponse
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('home');
+    }
+}
