@@ -13,7 +13,6 @@ class Tripulacion extends Model
     protected $fillable = [
         'id_rol',
         'id_user',
-        'nombre_completo',
         'num_licencia',
     ];
 

@@ -26,7 +26,7 @@ class AccountController extends Controller
         return view('access.register');
     }
 
-    public function login(\App\Http\Requests\LoginRequest $request): RedirectResponse
+    public function login(LoginRequest $request): RedirectResponse
     {
         $credentials = [
             'email' => $request->validated('email'),
@@ -41,10 +41,10 @@ class AccountController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('panel.index');
+        return redirect()->route('panel.principal');
     }
 
-    public function register(\App\Http\Requests\RegisterRequest $request): RedirectResponse
+    public function register(RegisterRequest $request): RedirectResponse
     {
         $data = $request->validated();
 
@@ -58,8 +58,7 @@ class AccountController extends Controller
             ]);
 
             Pasajero::create([
-                'id_user' => $user->id_user,
-                'nombre_completo' => $data['name'],
+                'id_user' => $user->id_user,                
                 'pasaporte' => $data['passport_number'],
                 'nacionalidad' => $data['nationality'],
             ]);
@@ -70,10 +69,10 @@ class AccountController extends Controller
         Auth::login($user);
         request()->session()->regenerate();
 
-        return redirect()->route('panel.index');
+        return redirect()->route('panel.principal');
     }
 
-    public function update(\App\Http\Requests\UpdateRequest $request): RedirectResponse
+    public function update(UpdateRequest $request): RedirectResponse
     {
         /** @var User $user */
         $user = $request->user();
@@ -97,7 +96,6 @@ class AccountController extends Controller
                 Pasajero::updateOrCreate(
                     ['id_user' => $user->id_user],
                     [
-                        'nombre_completo' => $data['name'],
                         'pasaporte' => $data['passport_number'],
                         'nacionalidad' => $data['nationality'],
                     ]
@@ -108,7 +106,6 @@ class AccountController extends Controller
                 Tripulacion::updateOrCreate(
                     ['id_user' => $user->id_user],
                     [
-                        'nombre_completo' => $data['name'],
                         'num_licencia' => $data['license_number'],
                     ]
                 );
@@ -147,7 +144,7 @@ class AccountController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home');
+        return redirect()->route('inicio');
     }
 
     public function logout(Request $request): RedirectResponse
@@ -157,6 +154,6 @@ class AccountController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home');
+        return redirect()->route('inicio');
     }
 }

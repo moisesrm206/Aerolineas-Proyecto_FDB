@@ -15,7 +15,6 @@ class Pasajero extends Model
 
     protected $fillable = [
         'id_user',
-        'nombre_completo',
         'pasaporte',
         'nacionalidad',
     ];

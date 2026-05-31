@@ -12,7 +12,6 @@ class PasajeroFactory extends Factory
     public function definition(): array
     {
         return [
-            'nombre_completo' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'telefono' => $this->faker->optional()->phoneNumber(),
             'pasaporte' => strtoupper($this->faker->bothify('??######')),

@@ -37,8 +37,7 @@ class ProfileController extends Controller
             if ($user->rol === 'pasajero') {
                 Pasajero::updateOrCreate(
                     ['id_user' => $user->id_user],
-                    [
-                        'nombre_completo' => $data['name'],
+                    [                        
                         'pasaporte' => $data['passport_number'],
                         'nacionalidad' => $data['nationality'],
                     ]
@@ -49,7 +48,6 @@ class ProfileController extends Controller
                 Tripulacion::updateOrCreate(
                     ['id_user' => $user->id_user],
                     [
-                        'nombre_completo' => $data['name'],
                         'num_licencia' => $data['license_number'],
                     ]
                 );
@@ -88,6 +86,6 @@ class ProfileController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home');
+        return redirect()->route('inicio');
     }
 }

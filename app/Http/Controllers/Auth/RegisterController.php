@@ -33,7 +33,6 @@ class RegisterController extends Controller
 
             Pasajero::create([
                 'id_user' => $user->id_user,
-                'nombre_completo' => $data['name'],
                 'pasaporte' => $data['passport_number'],
                 'nacionalidad' => $data['nationality'],
             ]);
@@ -44,6 +43,6 @@ class RegisterController extends Controller
         Auth::login($user);
         request()->session()->regenerate();
 
-        return redirect()->route('panel.index');
+        return redirect()->route('panel.principal');
     }
 }

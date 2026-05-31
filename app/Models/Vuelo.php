@@ -37,7 +37,7 @@ class Vuelo extends Model
 
     public function tripulacionVuelo()
     {
-        return $this->hasOne(TripulacionVuelo::class, 'id_vuelo', 'id_vuelo');
+        return $this->hasMany(TripulacionVuelo::class, 'id_vuelo', 'id_vuelo');
     }
 
     public function reservas()

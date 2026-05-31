@@ -17,6 +17,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+            'Database\\Seeders\\RolTripulacionSeeder',
+        ]);
+
+        // Usuario administrador inicial para poder acceder al panel y dar de alta más cuentas.
+        User::updateOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'nombre' => 'Admin Principal',
+                'telefono' => '600000001',
+                'contrasenna' => Hash::make('123456'),
+                'rol' => 'admin',
+            ]
+        );
+
         // Crear o actualizar usuario de prueba
         $user = User::updateOrCreate(
             ['email' => 'test@example.com'],
