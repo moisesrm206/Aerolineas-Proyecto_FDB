@@ -4,9 +4,9 @@
 
 @section('content')
     <section class="mx-auto max-w-7xl px-4 pb-16 pt-10 sm:px-6 lg:px-8 lg:pt-14">
-        <div class = "grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] width full ">
+        <div class="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr]">
             <h1 class="text-4xl font-bold text-white">Vuela a donde quieras con AeroVuelos</h1>
-            <p class="text-lg text-white/70">Las mejores tarifas el mejor servicio, destinos increibles</p>
+            <p class="text-lg text-white/70">Tarifas, rutas y gestión de viaje en una sola plataforma.</p>
         </div>
         <div class="grid items-center gap-10 lg:grid-cols-[1.08fr_0.92fr]">
             <div class="space-y-8">
@@ -14,26 +14,26 @@
                     <a href="#contacto" class="primary-button inline-flex items-center justify-center rounded-2xl px-8 py-4 text-sm font-semibold text-white transition duration-300">
                         Comienza tu viaje
                     </a>
-                    <a href="{{ route('vuelos.index') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/10 px-8 py-4 text-sm font-semibold text-white transition duration-300 hover:bg-white/15">
+                    <a href="{{ route('vuelos.lista') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/10 px-8 py-4 text-sm font-semibold text-white transition duration-300 hover:bg-white/15">
                         Ver vuelos
                     </a>
                 </div>
 
                 <div class="grid gap-4 sm:grid-cols-3">
-                    <div class="glass-panel rounded-[1.75rem] p-5">
+                    <div class="glass-panel rounded-3xl p-5">
                         <p class="text-sm text-white/55">Destinos</p>
                         <p class="mt-2 text-3xl font-bold text-white">100+</p>
-                        <p class="mt-2 text-sm text-white/70">Ciudades conectadas en todo el mundo</p>
+                        <p class="mt-2 text-sm text-white/70">Ciudades conectadas</p>
                     </div>
-                    <div class="glass-panel rounded-[1.75rem] p-5">
+                    <div class="glass-panel rounded-3xl p-5">
                         <p class="text-sm text-white/55">Puntualidad</p>
                         <p class="mt-2 text-3xl font-bold text-white">95%</p>
-                        <p class="mt-2 text-sm text-white/70">Salidas a tiempo y atención confiable</p>
+                        <p class="mt-2 text-sm text-white/70">Puntualidad operativa</p>
                     </div>
-                    <div class="glass-panel rounded-[1.75rem] p-5">
+                    <div class="glass-panel rounded-3xl p-5">
                         <p class="text-sm text-white/55">Soporte</p>
                         <p class="mt-2 text-3xl font-bold text-white">24/7</p>
-                        <p class="mt-2 text-sm text-white/70">Asistencia antes, durante y después del viaje</p>
+                        <p class="mt-2 text-sm text-white/70">Soporte continuo</p>
                     </div>
                 </div>
             </div>
@@ -72,15 +72,15 @@
                     </div>
 
                     <div class="mt-5 grid gap-4 sm:grid-cols-2">
-                        <div class="rounded-[1.75rem] border border-white/10 bg-white/5 p-5">
+                        <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
                             <p class="text-sm text-white/55">Check-in digital</p>
-                            <p class="mt-3 text-xl font-semibold text-white">Más rápido, más simple</p>
-                            <p class="mt-3 text-sm leading-6 text-white/70">Gestiona tus vuelos y tu equipaje sin filas innecesarias.</p>
+                            <p class="mt-3 text-xl font-semibold text-white">Acceso inmediato</p>
+                            <p class="mt-3 text-sm leading-6 text-white/70">Gestión de vuelos y equipaje sin pasos extra.</p>
                         </div>
-                        <div class="rounded-[1.75rem] border border-white/10 bg-white/5 p-5">
+                        <div class="rounded-3xl border border-white/10 bg-white/5 p-5">
                             <p class="text-sm text-white/55">Selección de asiento</p>
-                            <p class="mt-3 text-xl font-semibold text-white">Tu viaje, tu comodidad</p>
-                            <p class="mt-3 text-sm leading-6 text-white/70">Elige la mejor ubicación antes de abordar.</p>
+                            <p class="mt-3 text-xl font-semibold text-white">Ubicación preferente</p>
+                            <p class="mt-3 text-sm leading-6 text-white/70">Selecciona asiento antes del abordaje.</p>
                         </div>
                     </div>
                 </div>
@@ -96,25 +96,25 @@
 
         <div class="mt-14 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
             <article class="glass-panel rounded-4xl p-6 text-center">
-                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 text-3xl text-blue-600">🌐</div>
+                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5 text-3xl text-[#e8d6bb]"><ion-icon name="globe-sharp"></ion-icon></div>
                 <h3 class="mt-6 text-xl font-semibold text-white">Destinos globales</h3>
-                <p class="mt-3 text-sm leading-7 text-white/70">Más de 100 destinos en todo el mundo.</p>
+                <p class="mt-3 text-sm leading-7 text-white/70">Más de 100 destinos disponibles.</p>
             </article>
 
             <article class="glass-panel rounded-4xl p-6 text-center">
-                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 text-3xl text-blue-600">🛡️</div>
+                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5 text-3xl text-[#e8d6bb]"><ion-icon name="shield-checkmark-sharp"></ion-icon></div>
                 <h3 class="mt-6 text-xl font-semibold text-white">Seguridad garantizada</h3>
-                <p class="mt-3 text-sm leading-7 text-white/70">Los más altos estándares de seguridad.</p>
+                <p class="mt-3 text-sm leading-7 text-white/70">Estándares operativos validados.</p>
             </article>
 
             <article class="glass-panel rounded-4xl p-6 text-center">
-                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 text-3xl text-blue-600">🕒</div>
+                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5 text-3xl text-[#e8d6bb]"><ion-icon name="time-sharp"></ion-icon></div>
                 <h3 class="mt-6 text-xl font-semibold text-white">Puntualidad</h3>
-                <p class="mt-3 text-sm leading-7 text-white/70">95% de nuestros vuelos salen a tiempo.</p>
+                <p class="mt-3 text-sm leading-7 text-white/70">95% de salidas a tiempo.</p>
             </article>
 
             <article class="glass-panel rounded-4xl p-6 text-center">
-                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 text-3xl text-blue-600">✈️</div>
+                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5 text-3xl text-[#e8d6bb]"><ion-icon name="airplane-sharp"></ion-icon></div>
                 <h3 class="mt-6 text-xl font-semibold text-white">Flota moderna</h3>
                 <p class="mt-3 text-sm leading-7 text-white/70">Aeronaves de última generación.</p>
             </article>
@@ -128,7 +128,7 @@
         </div>
 
         <div class="mt-12 grid gap-6 lg:grid-cols-3">
-            <article class="overflow-hidden rounded-[1.75rem] bg-white shadow-[0_12px_35px_rgba(15,23,42,0.12)]">
+            <article class="overflow-hidden rounded-3xl bg-white shadow-[0_12px_35px_rgba(15,23,42,0.12)]">
                 <div class="h-56 bg-[linear-gradient(180deg,#4e8cff_0%,#1d56eb_100%)]"></div>
                 <div class="p-6">
                     <p class="text-2xl font-semibold text-slate-200/70">Los Ángeles</p>
@@ -138,12 +138,12 @@
                             <p class="text-lg text-slate-500">Desde</p>
                             <p class="text-3xl font-semibold text-blue-600">$4,500</p>
                         </div>
-                        <a href="{{ route('vuelos.index') }}" class="text-blue-600 transition hover:text-blue-500">Ver vuelos →</a>
+                        <a href="{{ route('vuelos.lista') }}" class="text-blue-600 transition hover:text-blue-500">Ver vuelos →</a>
                     </div>
                 </div>
             </article>
 
-            <article class="overflow-hidden rounded-[1.75rem] bg-white shadow-[0_12px_35px_rgba(15,23,42,0.12)]">
+            <article class="overflow-hidden rounded-3xl bg-white shadow-[0_12px_35px_rgba(15,23,42,0.12)]">
                 <div class="h-56 bg-[linear-gradient(180deg,#4e8cff_0%,#1d56eb_100%)]"></div>
                 <div class="p-6">
                     <p class="text-2xl font-semibold text-slate-200/70">Miami</p>
@@ -153,12 +153,12 @@
                             <p class="text-lg text-slate-500">Desde</p>
                             <p class="text-3xl font-semibold text-blue-600">$5,200</p>
                         </div>
-                        <a href="{{ route('vuelos.index') }}" class="text-blue-600 transition hover:text-blue-500">Ver vuelos →</a>
+                        <a href="{{ route('vuelos.lista') }}" class="text-blue-600 transition hover:text-blue-500">Ver vuelos →</a>
                     </div>
                 </div>
             </article>
 
-            <article class="overflow-hidden rounded-[1.75rem] bg-white shadow-[0_12px_35px_rgba(15,23,42,0.12)]">
+            <article class="overflow-hidden rounded-3xl bg-white shadow-[0_12px_35px_rgba(15,23,42,0.12)]">
                 <div class="h-56 bg-[linear-gradient(180deg,#4e8cff_0%,#1d56eb_100%)]"></div>
                 <div class="p-6">
                     <p class="text-2xl font-semibold text-slate-200/70">Madrid</p>
@@ -168,7 +168,7 @@
                             <p class="text-lg text-slate-500">Desde</p>
                             <p class="text-3xl font-semibold text-blue-600">$12,500</p>
                         </div>
-                        <a href="{{ route('vuelos.index') }}" class="text-blue-600 transition hover:text-blue-500">Ver vuelos →</a>
+                        <a href="{{ route('vuelos.lista') }}" class="text-blue-600 transition hover:text-blue-500">Ver vuelos →</a>
                     </div>
                 </div>
             </article>
@@ -177,11 +177,11 @@
 
     <section id="contacto" class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div class="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
-            <div class="rounded-[2.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(124,58,237,0.18),rgba(15,23,42,0.2))] p-8 lg:p-10">
+            <div class="rounded-5xl border border-white/10 bg-[linear-gradient(180deg,rgba(124,58,237,0.18),rgba(15,23,42,0.2))] p-8 lg:p-10">
                 <p class="section-label">Contacto</p>
                 <h2 class="section-title mt-4">¿Listo para conectar el sistema con sus procesos reales?</h2>
                 <p class="section-copy mt-5">
-                    Esta sección puede crecer después con formulario funcional, integración de correo o enlace directo a soporte.
+                    Espacio para soporte, contacto o documentación adicional.
                 </p>
                 <div class="mt-8 space-y-4 text-sm text-white/70">
                     <p>Correo: contacto@aerolineas.com</p>
@@ -190,7 +190,7 @@
                 </div>
             </div>
 
-            <form class="glass-panel rounded-[2.5rem] p-8 lg:p-10">
+            <form class="glass-panel rounded-5xl p-8 lg:p-10">
                 <div class="grid gap-5">
                     <div>
                         <label class="mb-2 block text-sm text-white/70">Nombre</label>

@@ -18,6 +18,8 @@
         <link rel="modulepreload" as="script" href="/build/{{ $jsFile }}">
         <script type="module" src="/build/{{ $jsFile }}"></script>
     @endif
+    <script type="module" src="https://unpkg.com/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
 </head>
 <body class="font-sans text-white antialiased">
     <div class="relative min-h-screen overflow-hidden bg-[#0f172a]">
@@ -51,14 +53,27 @@
                 <!-- Botones de autenticación desktop -->
                 <div class="hidden items-center gap-3 lg:flex">
                     @guest
-                        <a href="/login" class="outline-button rounded-full px-5 py-2.5 text-sm font-medium transition duration-300">Iniciar sesión</a>
-                        <a href="/register" class="primary-button rounded-full px-5 py-2.5 text-sm font-semibold transition duration-300">Registro</a>
+                        <a href="{{ route('iniciar.sesion') }}" class="outline-button rounded-full px-5 py-2.5 text-sm font-medium transition duration-300">Iniciar sesión</a>
+                        <a href="{{ route('registro') }}" class="primary-button rounded-full px-5 py-2.5 text-sm font-semibold transition duration-300">Registro</a>
                     @endguest
 
                     @auth
-                        <a href="{{ route('admin.cuenta.nueva') }}" class="primary-button rounded-full px-5 py-2.5 text-sm font-semibold transition duration-300">
-                            Agregar cuenta
-                        </a>
+                        @if((auth()->user()->rol ?? null) === 'admin')
+                            <a href="{{ route('admin.aeronaves') }}" class="outline-button rounded-full px-5 py-2.5 text-sm font-medium transition duration-300">
+                                Aeronaves
+                            </a>
+                            <a href="{{ route('admin.cuentas.nueva') }}" class="primary-button rounded-full px-5 py-2.5 text-sm font-semibold transition duration-300">
+                                Agregar cuenta
+                            </a>
+                        @endif
+
+                        <form action="{{ route('cerrar.sesion') }}" method="POST" class="inline-flex">
+                            @csrf
+                            <button type="submit" class="outline-button inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition duration-300">
+                                <ion-icon name="log-out-sharp"></ion-icon>
+                                Cerrar sesión
+                            </button>
+                        </form>
                     @endauth
                 </div>
 
@@ -72,12 +87,25 @@
                 <div id="mobile-menu" class="glass-panel absolute right-0 top-16 mt-2 hidden w-64 rounded-3xl p-4 shadow-2xl shadow-black/40" role="menu" aria-hidden="true">
                     <div class="flex flex-col gap-3 text-sm">
                         @guest
-                            <a href="/login" class="rounded-xl px-3 py-2 text-white/80 transition hover:bg-white/5 hover:text-white">Iniciar sesión</a>
-                            <a href="/register" class="rounded-xl px-3 py-2 text-white/80 transition hover:bg-white/5 hover:text-white">Registro</a>
+                            <a href="{{ route('iniciar.sesion') }}" class="rounded-xl px-3 py-2 text-white/80 transition hover:bg-white/5 hover:text-white">Iniciar sesión</a>
+                            <a href="{{ route('registro') }}" class="rounded-xl px-3 py-2 text-white/80 transition hover:bg-white/5 hover:text-white">Registro</a>
                         @endguest
 
                         @auth
-                            <a href="{{ route('admin.cuenta.nueva') }}" class="rounded-xl px-3 py-2 text-white/80 transition hover:bg-white/5 hover:text-white">Agregar cuenta</a>
+                            @if((auth()->user()->rol ?? null) === 'admin')
+                                <a href="{{ route('admin.aeronaves') }}" class="rounded-xl px-3 py-2 text-white/80 transition hover:bg-white/5 hover:text-white">Aeronaves</a>
+                                <a href="{{ route('admin.cuentas.nueva') }}" class="rounded-xl px-3 py-2 text-white/80 transition hover:bg-white/5 hover:text-white">Agregar cuenta</a>
+                            @endif
+
+                            <form action="{{ route('cerrar.sesion') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="w-full rounded-xl px-3 py-2 text-left text-white/80 transition hover:bg-white/5 hover:text-white">
+                                    <span class="inline-flex items-center gap-2">
+                                        <ion-icon name="log-out-sharp"></ion-icon>
+                                        Cerrar sesión
+                                    </span>
+                                </button>
+                            </form>
                         @endauth
                         <a href="/" class="rounded-xl px-3 py-2 text-white/80 transition hover:bg-white/5 hover:text-white">Inicio</a>
                         <a href="#servicios" class="rounded-xl px-3 py-2 text-white/80 transition hover:bg-white/5 hover:text-white">Servicios</a>
@@ -165,42 +193,5 @@
             </footer>
         </main>
     </div>
-    <script>
-        (function(){
-            const btn = document.getElementById('mobile-menu-btn');
-            const menu = document.getElementById('mobile-menu');
-
-            if(!btn || !menu) return;
-
-            function showMenu(){
-                menu.classList.remove('hidden');
-                btn.setAttribute('aria-expanded', 'true');
-                menu.setAttribute('aria-hidden', 'false');
-            }
-
-            function hideMenu(){
-                menu.classList.add('hidden');
-                btn.setAttribute('aria-expanded', 'false');
-                menu.setAttribute('aria-hidden', 'true');
-            }
-
-            btn.addEventListener('click', function(e){
-                e.stopPropagation();
-                if(menu.classList.contains('hidden')) showMenu(); else hideMenu();
-            });
-
-            // Click outside to close
-            document.addEventListener('click', function(e){
-                if(!menu.classList.contains('hidden') && !menu.contains(e.target) && e.target !== btn && !btn.contains(e.target)){
-                    hideMenu();
-                }
-            });
-
-            // Escape to close
-            document.addEventListener('keydown', function(e){
-                if(e.key === 'Escape') hideMenu();
-            });
-        })();
-    </script>
 </body>
 </html>

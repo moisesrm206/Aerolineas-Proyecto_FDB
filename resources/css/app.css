@@ -25,10 +25,14 @@
 
 @layer components {
     .glass-panel {
-        background: rgba(20, 12, 36, 0.72);
+        background: rgba(175, 165, 196, 0.539);
         border: 1px solid rgba(255, 255, 255, 0.1);
         box-shadow: 0 24px 80px rgba(0, 0, 0, 0.36);
         backdrop-filter: blur(20px);
+    }
+
+    ion-icon {
+        color: rgba(238, 246, 255, 0.95);
     }
 
     .glow-ring {
@@ -44,7 +48,7 @@
         text-transform: uppercase;
         font-size: 0.72rem;
         font-weight: 700;
-        color: #a78bfa;
+        color: #e6d3b6;
     }
 
     .section-title {

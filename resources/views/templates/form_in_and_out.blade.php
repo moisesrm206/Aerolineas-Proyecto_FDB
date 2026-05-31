@@ -18,6 +18,8 @@
         <link rel="modulepreload" as="script" href="/build/{{ $jsFile }}">
         <script type="module" src="/build/{{ $jsFile }}"></script>
     @endif
+    <script type="module" src="https://unpkg.com/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
 </head>
 <body class="font-sans text-white antialiased">
     <div class="relative min-h-screen overflow-hidden">
