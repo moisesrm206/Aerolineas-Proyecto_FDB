@@ -6,8 +6,10 @@
     <section class="space-y-6">
         <div class="flex items-end justify-between gap-4">
             <div>
-                <p class="section-label">Flota</p>
-                <h1 class="mt-2 text-3xl font-bold text-white">Añadir aeronave</h1>
+                @include('shared.page-title', [
+                    'label' => 'Flota',
+                    'title' => 'Añadir aeronave',
+                ])
             </div>
             <a href="{{ route('admin.aeronaves') }}" class="outline-button inline-flex items-center rounded-2xl px-5 py-3 text-sm font-semibold">
                 Volver a aeronaves

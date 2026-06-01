@@ -4,16 +4,31 @@
 
 @section('content')
     <div class="space-y-4 sm:space-y-6">
+        @section('hero')
+            @include('shared.page-hero', [
+                'label' => 'Gestión de reservas',
+                'title' => 'Mis Reservas',
+                'subtitle' => 'Revisa tus reservas, pagos y check-ins desde una sola vista.',
+            ])
+        @endsection
         @if (session('status'))
             <div class="glass-panel rounded-3xl border border-emerald-300/20 bg-emerald-300/10 px-4 py-3 text-sm text-emerald-100 sm:px-5">
                 {{ session('status') }}
             </div>
         @endif
 
+        @if ($errors->has('general'))
+            <div class="glass-panel rounded-3xl border border-rose-300/20 bg-rose-300/10 px-4 py-3 text-sm text-rose-100 sm:px-5">
+                {{ $errors->first('general') }}
+            </div>
+        @endif
+
         <div class="space-y-3 sm:space-y-4">
             <div>
-                <p class="section-label">Gestión de reservas</p>
-                <h1 class="section-title mt-3 sm:mt-4">Mis Reservas</h1>
+                @include('shared.page-title', [
+                    'label' => 'Gestión de reservas',
+                    'title' => 'Mis Reservas',
+                ])
             </div>
 
             <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.5rem; width:100%; text-align:center;" class="sm:gap-4">
@@ -100,9 +115,20 @@
                             <a href="#" class="inline-flex min-w-28 items-center justify-center rounded-2xl bg-cyan-500 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-cyan-400">
                                 Ver boleto
                             </a>
-                            <button type="button" class="inline-flex min-w-28 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-white/80 transition hover:bg-white/10">
-                                Check-in
-                            </button>
+                            @auth
+                                @if((int) (Auth::user()->pasajero?->id_pasajero ?? 0) === (int) $reserva->id_pasajero && !str_contains(mb_strtolower((string) ($reserva->estado ?? '')), 'check'))
+                                    <form action="{{ route('reservas.checkin', $reserva->id_reserva) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="inline-flex min-w-28 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-white/80 transition hover:bg-white/10">
+                                            Check-in
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="inline-flex min-w-28 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-white/50">
+                                        Check-in hecho
+                                    </span>
+                                @endif
+                            @endauth
                         </div>
                     </div>
                 </article>

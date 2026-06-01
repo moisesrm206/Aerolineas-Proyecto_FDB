@@ -4,11 +4,20 @@
 
 @section('content')
     <section class="space-y-8">
+        @section('hero')
+            @include('shared.page-hero', [
+                'label' => 'Operación activa',
+                'title' => 'Gestión de Tripulación',
+                'subtitle' => 'Seguimiento de vuelos próximos y pasados por rol operativo.',
+            ])
+        @endsection
         <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
             <div>
-                <p class="section-label">Operación activa</p>
-                <h1 class="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">Gestión de Tripulación</h1>
-                <p class="mt-4 max-w-2xl text-base leading-7 text-white/70 sm:text-lg">Seguimiento de vuelos próximos y pasados por rol operativo.</p>
+                @include('shared.page-title', [
+                    'label' => 'Operación activa',
+                    'title' => 'Gestión de Tripulación',
+                    'subtitle' => 'Seguimiento de vuelos próximos y pasados por rol operativo.',
+                ])
                 <p class="mt-2 text-xs uppercase tracking-[0.26em] text-white/45">Actualizado {{ $nowLabel }}</p>
             </div>
 

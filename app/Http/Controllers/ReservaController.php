@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Boleto;
 use App\Models\Reserva;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Pasajero;
 use Illuminate\Http\Request;
 
@@ -34,6 +37,116 @@ class ReservaController extends Controller
         ]);
 
         return redirect()->route('reservas.lista')->with('status', 'Reserva creada correctamente.');
+    }
+
+    public function checkIn(Request $request, int $reservaId)
+    {
+        abort_unless(Auth::check(), 403);
+
+        $user = Auth::user();
+        $pasajero = $user->pasajero;
+
+        if (!$pasajero) {
+            return redirect()->route('cuenta.editar')->with('error', 'Completa tus datos de pasajero antes de hacer check-in.');
+        }
+
+        $reserva = Reserva::query()
+            ->with(['boletos', 'vuelo', 'pago'])
+            ->findOrFail($reservaId);
+
+        if ((int) $reserva->id_pasajero !== (int) $pasajero->id_pasajero) {
+            abort(403);
+        }
+
+        if (str_contains(mb_strtolower((string) ($reserva->estado ?? '')), 'cancel')) {
+            return redirect()->route('reservas.lista')->withErrors([
+                'general' => 'No puedes hacer check-in sobre una reserva cancelada.',
+            ]);
+        }
+
+        try {
+            DB::transaction(function () use ($reserva) {
+                $numeroAsiento = $reserva->boletos->first()?->numero_asiento;
+                if (empty($numeroAsiento)) {
+                    $numeroAsiento = 'PEND-' . str_pad((string) $reserva->id_reserva, 4, '0', STR_PAD_LEFT);
+                }
+
+                $precio = (float) ($reserva->pago?->monto_total ?? 0.01);
+                if ($precio <= 0) {
+                    $precio = 0.01;
+                }
+
+                Boleto::updateOrCreate(
+                    ['id_reserva' => $reserva->id_reserva],
+                    [
+                        'numero_asiento' => $numeroAsiento,
+                        'clase' => $reserva->boletos->first()?->clase ?? 'economica',
+                        'precio' => $precio,
+                    ]
+                );
+
+                $reserva->estado = 'confirmada';
+                $reserva->save();
+            });
+        } catch (QueryException $exception) {
+            return redirect()->route('reservas.lista')->withErrors([
+                'general' => 'No se pudo completar el check-in. Intenta de nuevo.',
+            ]);
+        }
+
+        return redirect()->route('reservas.lista')->with('status', 'Check-in realizado. Tu boleto está listo para descargar.');
+    }
+
+    public function adminCheckInForm()
+    {
+        return view('internal.admin-check-in');
+    }
+
+    public function adminCheckIn(Request $request, int $reservaId)
+    {
+        abort_unless(Auth::check() && Auth::user()->is_admin, 403);
+
+        $reserva = Reserva::query()
+            ->with(['boletos', 'vuelo', 'pago'])
+            ->findOrFail($reservaId);
+
+        if (str_contains(mb_strtolower((string) ($reserva->estado ?? '')), 'cancel')) {
+            return redirect()->route('admin.check-in.form')->withErrors([
+                'general' => 'No se puede hacer check-in sobre una reserva cancelada.',
+            ]);
+        }
+
+        try {
+            DB::transaction(function () use ($reserva) {
+                $numeroAsiento = $reserva->boletos->first()?->numero_asiento;
+                if (empty($numeroAsiento)) {
+                    $numeroAsiento = 'PEND-' . str_pad((string) $reserva->id_reserva, 4, '0', STR_PAD_LEFT);
+                }
+
+                $precio = (float) ($reserva->pago?->monto_total ?? 0.01);
+                if ($precio <= 0) {
+                    $precio = 0.01;
+                }
+
+                Boleto::updateOrCreate(
+                    ['id_reserva' => $reserva->id_reserva],
+                    [
+                        'numero_asiento' => $numeroAsiento,
+                        'clase' => $reserva->boletos->first()?->clase ?? 'economica',
+                        'precio' => $precio,
+                    ]
+                );
+
+                $reserva->estado = 'confirmada';
+                $reserva->save();
+            });
+        } catch (QueryException $exception) {
+            return redirect()->route('admin.check-in.form')->withErrors([
+                'general' => 'No se pudo completar el check-in. Intenta de nuevo.',
+            ]);
+        }
+
+        return redirect()->route('admin.check-in.form')->with('status', 'Check-in realizado correctamente para la reserva #' . $reserva->id_reserva);
     }
 
     public function index()
@@ -85,7 +198,7 @@ class ReservaController extends Controller
             $reserva->hora_salida = $salida?->format('H:i') ?? '--:--';
             $reserva->codigo_vuelo = 'AV' . str_pad((string) ($vuelo?->id_vuelo ?? $reserva->id_reserva), 3, '0', STR_PAD_LEFT);
             $reserva->asiento = $boleto?->numero_asiento ?? 'Pendiente';
-            $reserva->clase = $boleto?->clase ?? 'Económica';
+            $reserva->clase = $boleto?->clase ?? 'economica';
             $reserva->precio = $boleto?->precio ?? ($pago?->monto_total ?? 'Consultar');
             $reserva->moneda = 'MXN';
             $reserva->pago_estado = $pago?->metodo ?? 'Sin pago';

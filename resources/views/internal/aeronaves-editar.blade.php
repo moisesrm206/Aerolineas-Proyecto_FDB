@@ -6,11 +6,11 @@
     <section class="space-y-8">
         <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
             <div>
-                <p class="section-label">Acceso administrativo</p>
-                <h1 class="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">Editar aeronave</h1>
-                <p class="mt-4 max-w-2xl text-base leading-7 text-white/70 sm:text-lg">
-                    Actualiza la matrícula, la capacidad y el modelo asociado de esta aeronave.
-                </p>
+                @include('shared.page-title', [
+                    'label' => 'Acceso administrativo',
+                    'title' => 'Editar aeronave',
+                    'subtitle' => 'Actualiza la matrícula, la capacidad y el modelo asociado de esta aeronave.',
+                ])
             </div>
 
             <div class="flex flex-wrap gap-3 lg:justify-end">

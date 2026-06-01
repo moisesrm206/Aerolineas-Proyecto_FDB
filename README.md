@@ -1,79 +1,81 @@
-# Aerolíneas Proyecto FDB
+# Aerolíneas — Proyecto FDB
 
-Sistema web de gestión para una aerolínea desarrollado con Laravel. El proyecto está orientado a una landing page responsiva y a la administración de operaciones internas.
+Aplicación web de gestión para una aerolínea desarrollada con Laravel. Incluye interfaces para usuarios y un panel administrativo para operaciones, gestión de aeronaves, vuelos, tripulación y reservas.
 
-## Descripción
+## Tecnologías principales
 
-La aplicación está pensada para centralizar información y procesos de la aerolínea en cuatro módulos principales:
-
-- Pasajeros y clientes
-- Operaciones de vuelo
-- Flotilla
-- Personal
-
-## Tecnologías
-
-- Laravel
-- Blade
+- Laravel (Blade + Eloquent)
 - Tailwind CSS
 - Vite
-- Node.js y npm
+- Node.js / npm
 
 ## Requisitos
 
-- PHP compatible con Laravel (Usando laragon ó xampp)
-    -Versiones Compatibles: 8.2, 8.3
-- Composer (Instalado por defecto con laragon, requiere descarga si se usa xammp)
-- Node.js
-- npm
-- Servidor local como Laragon, XAMPP o similar
+- PHP 8.3+ (recomendado 8.2/8.3)
+- Composer
+- Node.js y npm
+- Servidor local (XAMPP, Laragon, Valet, etc.)
 
-## Instalación
+## Configuración y puesta en marcha (rápida)
 
-1. Clonar el repositorio.
-2. Instalar dependencias de PHP con Composer.
-3. Instalar dependencias de frontend con npm.
-4. Copiar el archivo `.env.example` a `.env`. (si no existe duplica '.env.example') 
-5. Generar la clave de la aplicación.
-6. Configurar la base de datos en el archivo `.env`.
+1. Clona el repositorio:
 
-## Ejecución en local
+    git clone <url-del-repo>
+    cd Aerolineas-Proyecto_FDB
 
-- Levantar el servidor de Laravel con `php artisan serve` (Si no se tiene laragon, o para usar ngrok y poder visualizar en mobiles).
-- Ejecutar Vite en modo desarrollo con `npm run dev`.
-- Si necesitas generar assets para producción, usar `npm run build`.
+2. Instala dependencias de PHP y frontend:
 
-## Base de datos
+    composer install
+    npm install
 
-El nombre definitivo de la base de datos aún está pendiente, ya que será definido mas tarde del proyecto.
+3. Copia el entorno y genera la clave de la app:
 
-Cuando se confirme, se deberá actualizar el archivo `.env` con estos datos:
+    copy .env.example .env         (Windows)
+    php artisan key:generate
 
-- `DB_CONNECTION`
-- `DB_HOST`
-- `DB_PORT`
-- `DB_DATABASE`
-- `DB_USERNAME` 
-- `DB_PASSWORD`
+4. Configura la base de datos en `.env` y ejecuta migraciones y seeders:
 
-## Estructura general
+    php artisan migrate --seed
 
-- `app/`: lógica principal de la aplicación
-- `resources/views/`: vistas Blade
-- `resources/css/`: estilos de la interfaz
-- `resources/js/`: scripts del frontend
-- `routes/`: rutas de la aplicación
-- `database/`: migraciones, seeders y factories
+5. Ejecuta la app en desarrollo:
 
-## Notas
+    php artisan serve
+    npm run dev
 
-- La interfaz usa Tailwind CSS.
-- El proyecto depende de Vite para compilar los assets del frontend.
-- Antes de ejecutar la vista en producción, es necesario generar el build de frontend.
 
-## Pendientes
+## Comandos útiles
 
-- Definir el nombre de la base de datos.
-- Crear los módulos funcionales de la plataforma.
-- Conectar la landing page con las rutas reales del sistema.
-- Cambiar el diseño de la landing page
+- Limpiar y recompilar vistas: `php artisan view:clear && php artisan view:cache`
+- Cache de configuración y rutas: `php artisan config:cache && php artisan route:cache`
+- Optimizar autoload (si carga lento): `composer dump-autoload`
+
+- Ejecutar pruebas (si hubiera pruebas): `php artisan test` o `vendor/bin/phpunit`
+- Crear symlink de almacenamiento (si es necesario): `php artisan storage:link`
+
+## Frontend
+
+- Desarrollo: `npm run dev`
+- Build producción: `npm run build`
+
+## Vistas y rutas relevantes
+
+- Vistas públicas (clientes): `resources/views/client/`
+- Panel administrativo: `resources/views/internal/`
+- Rutas principales: revisa `routes/web.php` para nombres de rutas como `vuelos.lista`, `reservas.store` y los prefijos `admin.*`.
+
+## Notas de desarrollo
+
+- Las acciones de administración están protegidas mediante comprobaciones de rol en los controladores (p. ej. `abort_unless(Auth::user() && Auth::user()->rol === 'admin', 403)`).
+- Evita modificar modelos centrales sin coordinación; muchos controladores y vistas asumen relaciones y campos concretos.
+
+## Problemas comunes y soluciones
+
+- Si ves errores de permisos en `storage/` o `bootstrap/cache`, ajusta permisos para el usuario del servidor web.
+- Si cambias vistas y no ves cambios, ejecuta `php artisan view:clear` y recarga Vite.
+
+## Contribuir
+
+1. Crea una rama por feature: `git checkout -b feat/mi-cambio`
+2. Haz commits claros y atómicos
+3. Abre un pull request describiendo el cambio y cómo probarlo
+

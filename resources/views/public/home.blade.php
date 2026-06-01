@@ -5,8 +5,10 @@
 @section('content')
     <section class="mx-auto max-w-7xl px-4 pb-16 pt-10 sm:px-6 lg:px-8 lg:pt-14">
         <div class="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr]">
-            <h1 class="text-4xl font-bold text-white">Vuela a donde quieras con AeroVuelos</h1>
-            <p class="text-lg text-white/70">Tarifas, rutas y gestión de viaje en una sola plataforma.</p>
+            @include('shared.page-title', [
+                'title' => 'Vuela a donde quieras con AeroVuelos',
+                'subtitle' => 'Tarifas, rutas y gestión de viaje en una sola plataforma.',
+            ])
         </div>
         <div class="grid items-center gap-10 lg:grid-cols-[1.08fr_0.92fr]">
             <div class="space-y-8">

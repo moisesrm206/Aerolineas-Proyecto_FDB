@@ -4,10 +4,13 @@
 
 @section('content')
     <section class="space-y-8">
-        <div class="flex-wrap gap-4 lg:items-end bg-blue-800/20 rounded-3xl p-6">
-            <h2 class="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">Bienvenido, {{ $user->nombre }}</h2>
-            <p class="section-label">Acceso autenticado</p>
-        </div>
+        @section('hero')
+            @include('shared.page-hero', [
+                'label' => 'Acceso autenticado',
+                'title' => 'Bienvenido, ' . ($user->nombre ?? ''),
+                'subtitle' => 'Accede a tus módulos y herramientas según tu rol',
+            ])
+        @endsection
 
         @if(($user->rol ?? 'pasajero') === 'admin')
             <div class="grid gap-6 md:grid-cols-3">
@@ -18,6 +21,7 @@
                     <div class="mt-6 flex flex-wrap gap-3">
                         <a href="{{ route('admin.aeronaves') }}" class="primary-button rounded-2xl px-4 py-2 text-sm font-semibold">Aeronaves</a>
                         <a href="{{ route('admin.vuelos') }}" class="primary-button rounded-2xl px-4 py-2 text-sm font-semibold">Vuelos</a>
+                        <a href="{{ route('admin.equipaje.crear') }}" class="primary-button rounded-2xl px-4 py-2 text-sm font-semibold">Registrar equipaje</a>
                         <a href="{{ route('reservas.lista') }}" class="primary-button rounded-2xl px-4 py-2 text-sm font-semibold">Reservas</a>
                         <a href="{{ route('equipaje.lista') }}" class="primary-button rounded-2xl px-4 py-2 text-sm font-semibold">Equipaje</a>
                         <a href="{{ route('operacion.tripulacion') }}" class="primary-button rounded-2xl px-4 py-2 text-sm font-semibold">Operación</a>
@@ -28,8 +32,7 @@
                     <h3 class="mt-3 text-2xl font-semibold">Vuelos y reservas</h3>
                     <div class="mt-6 flex flex-wrap gap-3">
                         <a href="{{ route('admin.vuelos.crear') }}" class="primary-button rounded-2xl px-4 py-2 text-sm font-semibold">Agregar vuelo</a>
-                        <a href="{{ route('admin.vuelos') }}" class="primary-button rounded-2xl px-4 py-2 text-sm font-semibold">Ver vuelos</a>
-                        <a href="{{ route('reservas.lista') }}" class="primary-button rounded-2xl px-4 py-2 text-sm font-semibold">Ver reservas</a>
+                        <a href="{{ route('admin.check-in.form') }}" class="primary-button rounded-2xl px-4 py-2 text-sm font-semibold">Check-in mostrador</a>
                     </div>
                 </article>
                 <article class="glass-panel rounded-4xl p-6">
@@ -37,7 +40,7 @@
                     <h3 class="mt-3 text-2xl font-semibold">Asignaciones</h3>
                     <p class="mt-3 text-white/65">Más adelante aquí puedes ver asignaciones, turnos y estados de vuelo.</p>
                     <div class="mt-6 flex flex-wrap gap-3">
-                        <a href="{{ route('operacion.tripulacion') }}" class="primary-button rounded-2xl px-4 py-2 text-sm font-semibold">Ver operación</a>
+                        <!-- Operación: enlace principal ya disponible en la primera tarjeta -->
                     </div>
                 </article>
             </div>
@@ -65,7 +68,7 @@
                     <h3 class="mt-3 text-2xl font-semibold">Incidencias</h3>
                     <p class="mt-3 text-white/65">Puedes sumar reportes rápidos sin mezclarlo con el panel del pasajero.</p>
                     <div class="mt-6 flex flex-wrap gap-3">
-                        <a href="{{ route('reservas.lista') }}" class="primary-button rounded-2xl px-4 py-2 text-sm font-semibold">Reservas</a>
+                        <!-- Reservas ya disponible en la tarjeta de Tripulación -->
                     </div>
                 </article>
             </div>

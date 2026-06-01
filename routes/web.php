@@ -45,6 +45,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/aeronaves/{aeronave}/editar', [App\Http\Controllers\AdminController::class, 'editAeronave'])->name('admin.aeronaves.editar');
         Route::put('/aeronaves/{aeronave}', [App\Http\Controllers\AdminController::class, 'updateAeronave'])->name('admin.aeronaves.actualizar');
         Route::post('/aeronaves/{aeronave}/mantenimiento', [App\Http\Controllers\AdminController::class, 'marcarAeronaveMantenimiento'])->name('admin.aeronaves.mantenimiento');
+        Route::get('/modelos-aeronave/nuevo', [App\Http\Controllers\AdminController::class, 'createModeloAeronave'])->name('admin.modelos-aeronave.crear');
+        Route::post('/modelos-aeronave', [App\Http\Controllers\AdminController::class, 'storeModeloAeronave'])->name('admin.modelos-aeronave.store');
+
+        Route::get('/equipaje/nuevo', [App\Http\Controllers\AdminController::class, 'createEquipaje'])->name('admin.equipaje.crear');
+        Route::post('/equipaje', [App\Http\Controllers\AdminController::class, 'storeEquipaje'])->name('admin.equipaje.store');
+
+        Route::get('/check-in', [App\Http\Controllers\ReservaController::class, 'adminCheckInForm'])->name('admin.check-in.form');
+        Route::post('/check-in/{reserva}', [App\Http\Controllers\ReservaController::class, 'adminCheckIn'])->name('admin.check-in.store');
 
         Route::get('/cuenta/nueva', [App\Http\Controllers\AdminController::class, 'createAccount'])->name('admin.cuentas.nueva');
 
@@ -66,6 +74,7 @@ Route::middleware('auth')->group(function () {
 
     // Reservas: crear reserva (usuario autenticado)
     Route::post('/reservas', [App\Http\Controllers\ReservaController::class, 'store'])->name('reservas.store');
+    Route::post('/reservas/{reserva}/check-in', [App\Http\Controllers\ReservaController::class, 'checkIn'])->name('reservas.checkin');
 });
 
 Route::get('/panel', [App\Http\Controllers\PanelController::class, 'show'])->middleware('auth')->name('panel.principal');
@@ -80,5 +89,7 @@ Route::get('/mis_vuelos', [VueloController::class, 'misVuelos'])->middleware('au
 
 Route::get('/reservas', [ReservaController::class, 'index'])->name('reservas.lista');
 
-Route::get('/equipaje', [App\Http\Controllers\PageController::class, 'equipaje'])->name('equipaje.lista');
+Route::get('/equipaje', [App\Http\Controllers\PageController::class, 'equipaje'])
+    ->middleware('auth')
+    ->name('equipaje.lista');
 

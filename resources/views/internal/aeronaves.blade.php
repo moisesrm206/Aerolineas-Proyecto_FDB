@@ -5,14 +5,14 @@
 @section('content')
     <section class="space-y-8">
         <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
-            <div>
-                <p class="section-label">Acceso administrativo</p>
-                <h1 class="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">Gestión de Aeronaves</h1>
-                <p class="mt-4 max-w-2xl text-base leading-7 text-white/70 sm:text-lg">
-                    Vista de control para revisar matrícula, modelo, capacidad y mantenimiento a partir de los datos disponibles en Aeronave y ModeloAeronave.
-                </p>
-                <p class="mt-2 text-xs uppercase tracking-[0.26em] text-white/45">Actualizado {{ $actualizado ?? '' }}</p>
-            </div>
+            
+            @section('hero')
+                @include('shared.page-hero', [
+                    'label' => 'Acceso administrativo',
+                    'title' => 'Gestión de Aeronaves',
+                    'subtitle' => 'Vista de control para revisar matrícula, modelo, capacidad y mantenimiento.',
+                ])
+            @endsection
 
             <div class="flex flex-wrap gap-3 lg:justify-end">
                 <a href="{{ route('admin.panel') }}" class="outline-button inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold transition duration-300">
@@ -71,7 +71,32 @@
                     <a href="{{ route('admin.aeronaves.crear') }}" class="primary-button inline-flex items-center rounded-2xl px-5 py-3 text-sm font-semibold text-white transition duration-300">
                         Añadir aeronave
                     </a>
+                    <a href="{{ route('admin.modelos-aeronave.crear') }}" class="outline-button inline-flex items-center rounded-2xl px-5 py-3 text-sm font-semibold transition duration-300">
+                        Añadir modelo
+                    </a>
                 </div>
+            </div>
+
+            <div class="glass-panel rounded-3xl p-5 sm:p-6">
+                <form id="aeronaves-filter-form" action="{{ route('admin.aeronaves') }}" method="GET" class="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+                    @include('shared.typeahead-search', [
+                        'searchId' => 'aeronaves-search',
+                        'resultsId' => 'aeronaves-results',
+                        'label' => 'Buscar aeronave',
+                        'placeholder' => 'Matrícula, modelo o fabricante',
+                    ])
+
+                    <div class="flex flex-wrap gap-3">
+                        <button type="submit" class="primary-button inline-flex items-center rounded-2xl px-5 py-3 text-sm font-semibold text-white transition duration-300">
+                            Filtrar
+                        </button>
+                        @if(!empty($filtro))
+                            <a href="{{ route('admin.aeronaves') }}" class="outline-button inline-flex items-center rounded-2xl px-5 py-3 text-sm font-semibold transition duration-300">
+                                Limpiar
+                            </a>
+                        @endif
+                    </div>
+                </form>
             </div>
 
             <div class="space-y-4">
@@ -153,4 +178,79 @@
             </div>
         </section>
     </section>
+    @push('scripts')
+    <script>
+        (() => {
+            const boot = () => {
+            const form = document.getElementById('aeronaves-filter-form');
+            const searchInput = document.getElementById('aeronaves-search');
+
+            if (!form || !window.initTypeaheadPicker) {
+                return;
+            }
+
+            form.addEventListener('submit', () => {
+                if (!searchInput) {
+                    return;
+                }
+
+                let hidden = form.querySelector('input[name="q"]');
+                if (!hidden) {
+                    hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = 'q';
+                    form.appendChild(hidden);
+                }
+
+                hidden.value = searchInput.value.trim();
+            });
+
+            window.initTypeaheadPicker({
+                inputSelector: '#aeronaves-search',
+                resultsSelector: '#aeronaves-results',
+                items: @json($aeronavesBusqueda ?? []),
+                minChars: 1,
+                debounceMs: 180,
+                filterItems(list, query) {
+                    return list.filter((item) => (item.texto || '').toLowerCase().includes(query));
+                },
+                renderItem(item, index, activeIndex) {
+                    const isActive = index === activeIndex;
+                    const activeClass = isActive ? 'bg-cyan-300/15 ring-1 ring-cyan-300/40' : 'hover:bg-white/5';
+
+                    return `<div class="p-2 rounded cursor-pointer transition ${activeClass}" data-index="${index}" role="option" aria-selected="${isActive ? 'true' : 'false'}">
+                                <div class="text-sm ${isActive ? 'text-cyan-100' : ''}">${item.nombre || 'Sin matrícula'}</div>
+                                <div class="text-xs text-white/55">${item.licencia || 'Sin modelo'}</div>
+                            </div>`;
+                },
+                onSelect(item, helpers) {
+                    const input = document.getElementById('aeronaves-search');
+                    if (input) {
+                        input.value = item.nombre || '';
+                    }
+
+                    let hidden = form.querySelector('input[name="q"]');
+                    if (!hidden) {
+                        hidden = document.createElement('input');
+                        hidden.type = 'hidden';
+                        hidden.name = 'q';
+                        form.appendChild(hidden);
+                    }
+
+                    hidden.value = item.nombre || '';
+                    helpers.hide();
+                    form.submit();
+                },
+            });
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', boot, { once: true });
+                return;
+            }
+
+            boot();
+        })();
+    </script>
+    @endpush
 @endsection

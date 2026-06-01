@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Aeronave;
+use App\Models\Aeropuerto;
+use App\Models\Boleto;
+use App\Models\Equipaje;
 use App\Models\Mantenimiento;
 use App\Models\ModeloAeronave;
 use App\Models\Pasajero;
@@ -16,6 +19,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
@@ -31,15 +36,39 @@ class AdminController extends Controller
     {
         abort_unless(Auth::user() && Auth::user()->rol === 'admin', 403);
 
+        $filtro = trim((string) request()->query('q', ''));
+
         $baseQuery = Aeronave::query()
             ->with([
                 'modelo:id_modelo,fabricante,nombre_comercial,autonomia_km',
                 'mantenimientos:id_mantenimiento,id_aeronave,fecha,tipo,responsable',
             ])
             ->withCount('mantenimientos')
+            ->when($filtro !== '', function ($query) use ($filtro) {
+                $termino = mb_strtolower($filtro);
+
+                $query->where(function ($subQuery) use ($termino) {
+                    $subQuery->whereRaw('LOWER(matricula) like ?', ['%' . $termino . '%'])
+                        ->orWhereHas('modelo', function ($modeloQuery) use ($termino) {
+                            $modeloQuery->whereRaw('LOWER(nombre_comercial) like ?', ['%' . $termino . '%'])
+                                ->orWhereRaw('LOWER(fabricante) like ?', ['%' . $termino . '%']);
+                        });
+                });
+            })
             ->orderBy('matricula');
 
-        $aeronaves = $baseQuery->paginate(6);
+        $aeronavesBusqueda = (clone $baseQuery)->get()->map(function (Aeronave $aeronave) {
+            $modelo = $aeronave->modelo;
+
+            return [
+                'id' => $aeronave->id_aeronave,
+                'nombre' => $aeronave->matricula,
+                'licencia' => trim(($modelo?->nombre_comercial ?? 'Sin modelo') . ' · ' . ($modelo?->fabricante ?? 'Sin fabricante')),
+                'texto' => trim($aeronave->matricula . ' ' . ($modelo?->nombre_comercial ?? '') . ' ' . ($modelo?->fabricante ?? '')),
+            ];
+        });
+
+        $aeronaves = $baseQuery->paginate(6)->withQueryString();
 
         $aeronaves->setCollection(
             $aeronaves->getCollection()->map(function (Aeronave $aeronave) {
@@ -75,6 +104,8 @@ class AdminController extends Controller
             'aeronaves' => $aeronaves,
             'resumen' => $resumen,
             'actualizado' => Carbon::now()->translatedFormat('d/m/Y H:i'),
+            'filtro' => $filtro,
+            'aeronavesBusqueda' => $aeronavesBusqueda,
         ]);
     }
 
@@ -88,6 +119,36 @@ class AdminController extends Controller
                 ->orderBy('nombre_comercial')
                 ->get(),
         ]);
+    }
+
+    public function createModeloAeronave()
+    {
+        abort_unless(Auth::user() && Auth::user()->rol === 'admin', 403);
+
+        return view('internal.modelos-aeronave-crear', [
+            'modelos' => ModeloAeronave::query()
+                ->select(['id_modelo', 'fabricante', 'nombre_comercial', 'autonomia_km'])
+                ->orderBy('nombre_comercial')
+                ->paginate(8)
+                ->withQueryString(),
+        ]);
+    }
+
+    public function storeModeloAeronave(Request $request)
+    {
+        abort_unless(Auth::user() && Auth::user()->rol === 'admin', 403);
+
+        $data = $request->validate([
+            'fabricante' => ['required', 'string', 'max:120'],
+            'nombre_comercial' => ['required', 'string', 'max:120'],
+            'autonomia_km' => ['required', 'integer', 'min:1'],
+        ]);
+
+        ModeloAeronave::create($data);
+
+        return redirect()
+            ->route('admin.modelos-aeronave.crear')
+            ->with('status', 'Modelo de aeronave creado correctamente.');
     }
 
     public function storeAeronave(Request $request)
@@ -209,6 +270,83 @@ class AdminController extends Controller
             ->with('status', 'La aeronave fue marcada en mantenimiento.');
     }
 
+    public function createEquipaje()
+    {
+        abort_unless(Auth::user() && Auth::user()->rol === 'admin', 403);
+
+        return view('internal.equipaje-crear', [
+            'pasajeros' => Pasajero::query()
+                ->with('usuario:id_user,nombre')
+                ->orderBy('id_pasajero')
+                ->get(),
+            'boletos' => Boleto::query()
+                ->with([
+                    'reserva:id_reserva,id_pasajero,id_vuelo',
+                    'reserva.pasajero:id_pasajero,id_user',
+                    'reserva.pasajero.usuario:id_user,nombre',
+                    'reserva.vuelo:id_vuelo,id_ruta,salida_planificada,llegada_planificada',
+                    'reserva.vuelo.ruta:id_ruta,id_aeropuerto_origen,id_aeropuerto_destino',
+                    'reserva.vuelo.ruta.aeropuertoOrigen:id_aeropuerto,codigo_iata,ciudad',
+                    'reserva.vuelo.ruta.aeropuertoDestino:id_aeropuerto,codigo_iata,ciudad',
+                ])
+                ->orderByDesc('id_boleto')
+                ->limit(50)
+                ->get(),
+        ]);
+    }
+
+    public function storeEquipaje(Request $request)
+    {
+        abort_unless(Auth::user() && Auth::user()->rol === 'admin', 403);
+
+        $data = $request->validate([
+            'id_pasajero' => ['required', 'integer', 'exists:pasajero,id_pasajero'],
+            'id_boleto' => ['nullable', 'integer', 'exists:boleto,id_boleto'],
+            'tipo_equipaje' => ['required', 'in:mano,bodega'],
+            'peso_kg' => ['required', 'numeric', 'min:0.01'],
+            'estado' => ['required', 'in:registrado,en_cinta,cargado,en_transito,entregado,perdido'],
+        ]);
+
+
+        $data['tipo_equipaje'] = (string) $data['tipo_equipaje'];
+        $data['estado'] = (string) $data['estado'];
+        $data['etiqueta'] = 'TEMP-' . Str::upper(Str::random(8));
+
+        if (!empty($data['id_boleto'])) {
+            $boleto = Boleto::query()->with('reserva')->find($data['id_boleto']);
+
+            if (!$boleto || (int) ($boleto->reserva?->id_pasajero ?? 0) !== (int) $data['id_pasajero']) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['id_boleto' => 'El boleto seleccionado no pertenece al pasajero elegido.']);
+            }
+        }
+
+        try {
+            $equipaje = null;
+
+            DB::transaction(function () use ($data, &$equipaje) {
+                $equipaje = Equipaje::create($data);
+            });
+
+            if ($equipaje) {
+                // Actualizar etiqueta con el ID real
+                $equipaje->etiqueta = 'EQ-' . str_pad((string) $equipaje->id_equipaje, 6, '0', STR_PAD_LEFT);
+                $equipaje->save();
+            } else {
+                throw new \Exception('No se pudo crear el registro de equipaje.');
+            }
+        } catch (\Throwable $exception) {
+            return back()->withInput()->withErrors([
+                'general' => 'Error de base de datos: ' . $exception->getMessage(),
+            ]);
+        }
+
+        return redirect()
+            ->route('admin.equipaje.crear')
+            ->with('status', 'Equipaje registrado correctamente.');
+    }
+
     public function createAccount()
     {
         abort_unless(Auth::user() && Auth::user()->rol === 'admin', 403);
@@ -271,14 +409,45 @@ class AdminController extends Controller
 
         $paginator = $query->orderBy('salida_planificada')->paginate(20);
 
+        $aeropuertosBusqueda = Aeropuerto::query()
+            ->select(['id_aeropuerto', 'codigo_iata', 'nombre', 'ciudad'])
+            ->orderBy('codigo_iata')
+            ->get()
+            ->map(function ($aeropuerto) {
+                return [
+                    'id' => $aeropuerto->id_aeropuerto,
+                    'codigo_iata' => $aeropuerto->codigo_iata,
+                    'nombre' => $aeropuerto->nombre,
+                    'ciudad' => $aeropuerto->ciudad,
+                    'texto' => trim($aeropuerto->codigo_iata . ' ' . $aeropuerto->nombre . ' ' . $aeropuerto->ciudad),
+                ];
+            })
+            ->values();
+
         $paginator->setCollection($paginator->getCollection()->map(function ($vuelo) {
             $salida = Carbon::parse($vuelo->salida_planificada);
             $llegada = Carbon::parse($vuelo->llegada_planificada);
 
             $origen = $vuelo->ruta?->aeropuertoOrigen;
             $destino = $vuelo->ruta?->aeropuertoDestino;
+            $distanciaRuta = $vuelo->ruta?->distancia_km;
+            $aeronave = $vuelo->aeronave;
+            $modelo = $aeronave?->modelo;
 
             $vuelo->ruta_txt = ($origen?->codigo_iata ?? 'N/D') . ' → ' . ($destino?->codigo_iata ?? 'N/D');
+            $vuelo->distancia_km = $distanciaRuta ?? 'N/D';
+            $vuelo->origen = $origen?->codigo_iata ?? 'N/D';
+            $vuelo->origen_ciudad = $origen?->ciudad ?? 'Sin dato';
+            $vuelo->destino = $destino?->codigo_iata ?? 'N/D';
+            $vuelo->destino_ciudad = $destino?->ciudad ?? 'Sin dato';
+            $vuelo->salida = $salida->format('H:i');
+            $vuelo->llegada = $llegada->format('H:i');
+            $vuelo->fecha = $salida->translatedFormat('d M Y');
+            $vuelo->aeronave_matricula = $aeronave?->matricula ?? 'N/D';
+            $vuelo->aeronave_modelo = $modelo?->nombre_comercial ?? 'Sin modelo';
+            $vuelo->aeronave_fabricante = $modelo?->fabricante ?? 'Sin fabricante';
+            $vuelo->aeronave_capacidad = $aeronave?->capacidad_max ?? 'N/D';
+            $vuelo->aeronave_autonomia = $modelo?->autonomia_km ?? 'N/D';
             $vuelo->salida_txt = $salida->format('d/m/Y H:i');
             $vuelo->tripulacion = $vuelo->tripulacionVuelo->map(function ($asig) {
                 return [
@@ -294,6 +463,7 @@ class AdminController extends Controller
         return view('internal.vuelos-admin', [
             'vuelos' => $paginator,
             'filtros' => $filtros,
+            'aeropuertosBusqueda' => $aeropuertosBusqueda,
         ]);
     }
 
@@ -332,11 +502,19 @@ class AdminController extends Controller
             'id_ruta' => ['required', 'integer', 'exists:ruta,id_ruta'],
             'id_aeronave' => ['required', 'integer', 'exists:aeronave,id_aeronave'],
             'salida_planificada' => ['required', 'date'],
-            'llegada_planificada' => ['required', 'date'],
+            'llegada_planificada' => ['required', 'date', 'after:salida_planificada'],
             'estado' => ['required', 'in:programado,en_vuelo,aterrizado'],
         ]);
 
-        $vuelo->update($data);
+        try {
+            $vuelo->update($data);
+        } catch (QueryException $e) {
+            return redirect()->back()->withInput()->withErrors([
+                'llegada_planificada' => 'La fecha de llegada debe ser posterior a la fecha de salida (restricción de la base de datos).',
+            ]);
+        } catch (\Throwable $e) {
+            return redirect()->back()->withInput()->withErrors(['general' => 'Error al actualizar el vuelo. Intenta nuevamente.']);
+        }
 
         return redirect()->route('admin.vuelos')->with('status', 'Vuelo actualizado correctamente.');
     }
@@ -349,13 +527,21 @@ class AdminController extends Controller
             'id_ruta' => ['required', 'integer', 'exists:ruta,id_ruta'],
             'id_aeronave' => ['required', 'integer', 'exists:aeronave,id_aeronave'],
             'salida_planificada' => ['required', 'date'],
-            'llegada_planificada' => ['required', 'date'],
+            'llegada_planificada' => ['required', 'date', 'after:salida_planificada'],
             'estado' => ['required', 'in:programado,en_vuelo,aterrizado'],
         ]);
 
-        $vuelo = Vuelo::create($data);
+        try {
+            $vuelo = Vuelo::create($data);
+        } catch (QueryException $e) {
+            return redirect()->back()->withInput()->withErrors([
+                'llegada_planificada' => 'La fecha de llegada debe ser posterior a la fecha de salida (restricción de la base de datos).',
+            ]);
+        } catch (\Throwable $e) {
+            return redirect()->back()->withInput()->withErrors(['general' => 'Error al crear el vuelo. Intenta nuevamente.']);
+        }
 
-        return redirect('/admin/vuelos');
+        return redirect()->route('admin.vuelos')->with('status', 'Vuelo creado correctamente.');
     }
 
     public function asignarTripulacion(Request $request, int $vueloId)

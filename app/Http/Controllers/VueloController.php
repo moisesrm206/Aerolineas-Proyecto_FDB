@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Aeropuerto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -71,6 +72,7 @@ class VueloController extends Controller
 
             $origen = $vuelo->ruta?->aeropuertoOrigen;
             $destino = $vuelo->ruta?->aeropuertoDestino;
+            $distanciaRuta = $vuelo->ruta?->distancia_km;
             $aeronave = $vuelo->aeronave;
 
             $vuelo->ruta = ($origen?->codigo_iata ?? 'N/D') . ' → ' . ($destino?->codigo_iata ?? 'N/D');
@@ -81,9 +83,9 @@ class VueloController extends Controller
             $vuelo->salida = $salida->format('H:i');
             $vuelo->llegada = $llegada->format('H:i');
             $vuelo->fecha = $salida->translatedFormat('d M Y');
+            $vuelo->distancia_km = $distanciaRuta ?? 'N/D';
             $vuelo->aeronave_matricula = $aeronave?->matricula ?? 'N/D';
             $vuelo->capacidad_max = $aeronave?->capacidad_max ?? 'N/D';
-            $vuelo->distancia_km = $vuelo->ruta?->distancia_km ?? 'N/D';
 
             return $vuelo;
         });
@@ -100,7 +102,22 @@ class VueloController extends Controller
 
         $vueloDestacado = $paginator->first();
 
-        return view('client.vuelos', ['vuelos' => $paginator, 'resumen' => $resumen, 'filtros' => $filtros, 'vueloDestacado' => $vueloDestacado]);
+        $aeropuertosBusqueda = Aeropuerto::query()
+            ->select(['id_aeropuerto', 'codigo_iata', 'nombre', 'ciudad'])
+            ->orderBy('codigo_iata')
+            ->get()
+            ->map(function ($aeropuerto) {
+                return [
+                    'id' => $aeropuerto->id_aeropuerto,
+                    'codigo_iata' => $aeropuerto->codigo_iata,
+                    'nombre' => $aeropuerto->nombre,
+                    'ciudad' => $aeropuerto->ciudad,
+                    'texto' => trim($aeropuerto->codigo_iata . ' ' . $aeropuerto->nombre . ' ' . $aeropuerto->ciudad),
+                ];
+            })
+            ->values();
+
+        return view('client.vuelos', ['vuelos' => $paginator, 'resumen' => $resumen, 'filtros' => $filtros, 'vueloDestacado' => $vueloDestacado, 'aeropuertosBusqueda' => $aeropuertosBusqueda]);
     }
 
     public function misVuelos(Request $request)

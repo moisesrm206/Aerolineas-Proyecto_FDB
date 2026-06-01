@@ -116,12 +116,15 @@
             </div>
         </header>
 
-        <!-- Contenido principal -->
-        <main class="relative z-10 min-h-[calc(100vh-4rem)]">
-            <!-- Contenido de la página -->
-            <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                @yield('content')
-            </div>
+            <!-- Contenido principal -->
+            <main class="relative z-10 min-h-[calc(100vh-4rem)]">
+                {{-- Hero full-width placeholder --}}
+                @yield('hero')
+
+                <!-- Contenido de la página -->
+                <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                    @yield('content')
+                </div>
 
             <!-- Footer -->
             <footer class="relative mt-8 border-t border-white/10 bg-[#0f172a]/95 backdrop-blur-xl">
@@ -193,5 +196,6 @@
             </footer>
         </main>
     </div>
+    @stack('scripts')
 </body>
 </html>

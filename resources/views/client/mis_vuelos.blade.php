@@ -3,10 +3,15 @@
 @section('title', 'Mis vuelos')
 
 @section('content')
+    @section('hero')
+        @include('shared.page-hero', [
+            'label' => 'Mis viajes',
+            'title' => 'Mis vuelos',
+            'subtitle' => 'Tus próximas salidas y el historial de viajes.',
+        ])
+    @endsection
     <section>
-        <p class="section-label">Mis vuelos</p>
-        <h1 class="mt-2 text-2xl font-bold text-white">Vuelos en los que has volado</h1>
-
+        
         <div class="mt-6 space-y-4">
             @forelse($vuelos as $vuelo)
                 <div class="glass-panel p-4">

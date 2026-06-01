@@ -4,13 +4,20 @@
 
 @section('content')
     <section class="space-y-8">
+        @section('hero')
+            @include('shared.page-hero', [
+                'label' => 'Administración',
+                'title' => 'Crear vuelo',
+                'subtitle' => 'Define ruta, aeronave y horarios para un nuevo vuelo.',
+            ])
+        @endsection
         <div class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
             <div>
-                <p class="section-label">Administración</p>
-                <h1 class="mt-3 text-4xl font-bold tracking-tight text-white sm:text-5xl">Crear vuelo</h1>
-                <p class="mt-4 max-w-2xl text-base leading-7 text-white/70 sm:text-lg">
-                    Registra una nueva salida, asigna la ruta y vincula la aeronave desde un formulario más claro y directo.
-                </p>
+                @include('shared.page-title', [
+                    'label' => 'Administración',
+                    'title' => 'Crear vuelo',
+                    'subtitle' => 'Registra una nueva salida, asigna la ruta y vincula la aeronave desde un formulario más claro y directo.',
+                ])
             </div>
 
             <div class="glass-panel rounded-4xl p-5 sm:p-6">
@@ -40,44 +47,62 @@
             <form action="{{ route('admin.vuelos.store') }}" method="POST" class="grid gap-6">
                 @csrf
 
+                @if($errors->has('general'))
+                    <div class="rounded-3xl border border-rose-300/20 bg-rose-300/10 px-5 py-4 text-sm font-medium text-rose-100">
+                        {{ $errors->first('general') }}
+                    </div>
+                @endif
+
                 <div class="grid gap-6 lg:grid-cols-2">
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-white/80" for="id_ruta">Ruta</label>
-                        <select id="id_ruta" name="id_ruta" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/35 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/30">
+                        <select id="id_ruta" name="id_ruta" class="w-full rounded-2xl border {{ $errors->has('id_ruta') ? 'border-rose-300' : 'border-white/10' }} bg-white/5 px-4 py-3 text-white placeholder:text-white/35 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/30">
                             <option value="">Selecciona una ruta</option>
                             @foreach($rutas as $r)
                                 <option value="{{ $r->id_ruta }}">Ruta #{{ $r->id_ruta }} · {{ $r->id_aeropuerto_origen }} → {{ $r->id_aeropuerto_destino }}</option>
                             @endforeach
                         </select>
                         <p class="text-xs text-white/45">Usa la ruta que ya esté creada en la base de datos.</p>
+                        @error('id_ruta')
+                            <p class="mt-2 text-sm text-rose-300">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-white/80" for="id_aeronave">Aeronave</label>
-                        <select id="id_aeronave" name="id_aeronave" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/35 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/30">
+                        <select id="id_aeronave" name="id_aeronave" class="w-full rounded-2xl border {{ $errors->has('id_aeronave') ? 'border-rose-300' : 'border-white/10' }} bg-white/5 px-4 py-3 text-white placeholder:text-white/35 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/30">
                             <option value="">Selecciona una aeronave</option>
                             @foreach($aeronaves as $a)
                                 <option value="{{ $a->id_aeronave }}">{{ $a->matricula }} — {{ $a->nombre_modelo ?? $a->id_modelo }}</option>
                             @endforeach
                         </select>
                         <p class="text-xs text-white/45">Solo puedes asignar aeronaves ya registradas.</p>
+                        @error('id_aeronave')
+                            <p class="mt-2 text-sm text-rose-300">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-white/80" for="salida_planificada">Salida planificada</label>
-                        <input id="salida_planificada" name="salida_planificada" type="datetime-local" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/35 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/30">
+                        <input id="salida_planificada" name="salida_planificada" type="datetime-local" class="w-full rounded-2xl border {{ $errors->has('salida_planificada') ? 'border-rose-300' : 'border-white/10' }} bg-white/5 px-4 py-3 text-white placeholder:text-white/35 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/30">
                         <p class="text-xs text-white/45">Formato local de fecha y hora.</p>
+                        @error('salida_planificada')
+                            <p class="mt-2 text-sm text-rose-300">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-white/80" for="llegada_planificada">Llegada planificada</label>
                         <input id="llegada_planificada" name="llegada_planificada" type="datetime-local" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/35 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/30">
                         <p class="text-xs text-white/45">Debe ser posterior a la salida.</p>
+                        @error('llegada_planificada')
+                            <p class="mt-2 text-sm text-rose-300">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="space-y-2 lg:col-span-2">
                         <label class="block text-sm font-medium text-white/80" for="estado">Estado</label>
-                        <select id="estado" name="estado" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/35 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/30">
+                        <select id="estado" name="estado" class="w-full rounded-2xl border {{ $errors->has('estado') ? 'border-rose-300' : 'border-white/10' }} bg-white/5 px-4 py-3 text-white placeholder:text-white/35 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/30">
                             <option value="programado">programado</option>
                             <option value="en_vuelo">en_vuelo</option>
                             <option value="aterrizado">aterrizado</option>

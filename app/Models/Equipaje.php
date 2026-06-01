@@ -13,8 +13,16 @@ class Equipaje extends Model
     protected $fillable = [
         'id_pasajero',
         'id_boleto',
+        'tipo_equipaje',
+        'etiqueta',
         'peso_kg',
         'estado',
+    ];
+
+    protected $casts = [
+        'tipo_equipaje' => 'string',
+        'estado' => 'string',
+        'peso_kg' => 'decimal:2',
     ];
 
     public function pasajero()
