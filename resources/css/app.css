@@ -27,6 +27,8 @@
     .glass-panel {
         background: rgba(175, 165, 196, 0.539);
         border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1.5rem;
+        overflow: hidden;
         box-shadow: 0 24px 80px rgba(0, 0, 0, 0.36);
         backdrop-filter: blur(20px);
     }
@@ -38,7 +40,7 @@
     .glow-ring {
         position: absolute;
         inset: auto;
-        border-radius: 9999px;
+        border-radius: 1000px;
         filter: blur(12px);
         opacity: 0.7;
     }
@@ -62,6 +64,13 @@
         color: rgba(233, 228, 255, 0.74);
         font-size: 1.05rem;
         line-height: 1.75;
+    }
+
+    /* Select: mantener el valor mostrado en blanco (se controla vía clases en las vistas),
+       pero las opciones del desplegable deben ser legibles en negro */
+    select option {
+        color: #000 !important;
+        background-color: #fff !important;
     }
 
     .primary-button {

@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'AeroControl')</title>
-    @php
-        $manifestPath = public_path('build/manifest.json');
-        $manifest = file_exists($manifestPath) ? json_decode(file_get_contents($manifestPath), true) : [];
-        $cssFile = $manifest['resources/css/app.css']['file'] ?? null;
-        $jsFile = $manifest['resources/js/app.js']['file'] ?? null;
-    @endphp
-    @if($cssFile)
-        <link rel="preload" as="style" href="/build/{{ $cssFile }}">
-        <link rel="stylesheet" href="/build/{{ $cssFile }}">
-    @endif
-    @if($jsFile)
-        <link rel="modulepreload" as="script" href="/build/{{ $jsFile }}">
-        <script type="module" src="/build/{{ $jsFile }}"></script>
-    @endif
+    <title>@yield('title', 'Aeronexus')</title>
+       {{--  @php
+            $manifestPath = public_path('build/manifest.json');
+            $manifest = file_exists($manifestPath) ? json_decode(file_get_contents($manifestPath), true) : [];
+            $cssFile = $manifest['resources/css/app.css']['file'] ?? null;
+            $jsFile = $manifest['resources/js/app.js']['file'] ?? null;
+        @endphp
+        @if($cssFile)
+            <link rel="preload" as="style" href="/build/{{ $cssFile }}">
+            <link rel="stylesheet" href="/build/{{ $cssFile }}">
+        @endif
+        @if($jsFile)
+            <link rel="modulepreload" as="script" href="/build/{{ $jsFile }}">
+            <script type="module" src="/build/{{ $jsFile }}"></script>
+        @endif
+        @endphp --}}
+        <!-- uso de clases y js en desarrollo -->
+         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <script type="module" src="https://unpkg.com/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
 </head>
@@ -37,7 +41,7 @@
                 <a href="/" class="flex items-center gap-3">
                     <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-linear-to-br from-indigo-500 to-cyan-400 text-lg font-black text-white shadow-lg shadow-indigo-500/30">A</span>
                     <div>
-                        <p class="text-sm font-semibold tracking-[0.3em] text-cyan-300 uppercase">AeroControl</p>
+                        <p class="text-sm font-semibold tracking-[0.3em] text-cyan-300 uppercase">Aeronexus</p>
                         <p class="text-xs text-white/55">Gestión integral de aerolínea</p>
                     </div>
                 </a>
@@ -135,7 +139,7 @@
                         <div class="flex items-center gap-2 mb-4">
                             <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-linear-to-br from-indigo-500 to-cyan-400 text-lg font-black text-white shadow-lg shadow-indigo-500/30">A</span>
                             <div>
-                                <p class="text-sm font-semibold text-cyan-300">AeroControl</p>
+                                <p class="text-sm font-semibold text-cyan-300">Aeronexus</p>
                             </div>
                         </div>
                         <p class="text-sm text-white/55">Gestión integral de aerolínea con tecnología de vanguardia.</p>
@@ -178,7 +182,7 @@
                 <!-- Separador -->
                 <div class="border-t border-white/10 mt-8 pt-8">
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <p class="text-sm text-white/55">© 2024 AeroControl. Todos los derechos reservados.</p>
+                        <p class="text-sm text-white/55">© 2024 aeronexus. Todos los derechos reservados.</p>
                         <div class="flex items-center gap-6">
                             <a href="#" class="text-white/55 transition hover:text-white">
                                 <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>

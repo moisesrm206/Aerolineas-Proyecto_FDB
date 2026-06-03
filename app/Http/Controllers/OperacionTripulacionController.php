@@ -81,6 +81,8 @@ class OperacionTripulacionController extends Controller
         return (object) [
             'id_vuelo' => $vuelo->id_vuelo,
             'estado' => $vuelo->estado,
+            'salida_planificada' => $vuelo->salida_planificada,
+            'llegada_planificada' => $vuelo->llegada_planificada,
             'origen' => $origen?->codigo_iata ?? 'N/D',
             'origen_ciudad' => $origen?->ciudad ?? 'Sin dato',
             'destino' => $destino?->codigo_iata ?? 'N/D',

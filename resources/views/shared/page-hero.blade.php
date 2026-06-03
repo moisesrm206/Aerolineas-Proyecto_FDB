@@ -1,5 +1,5 @@
 @php
-    $title = $title ?? config('app.name', 'AeroControl');
+    $title = $title ?? config('app.name', 'Aeronexus');
     $subtitle = $subtitle ?? '';
     $label = $label ?? null;
     $bgClass = $bgClass ?? 'bg-blue-900/70';

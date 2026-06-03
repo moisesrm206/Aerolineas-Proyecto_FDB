@@ -12,14 +12,7 @@
             ])
         @endsection
         <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
-            <div>
-                @include('shared.page-title', [
-                    'label' => 'Operación activa',
-                    'title' => 'Gestión de Tripulación',
-                    'subtitle' => 'Seguimiento de vuelos próximos y pasados por rol operativo.',
-                ])
-                <p class="mt-2 text-xs uppercase tracking-[0.26em] text-white/45">Actualizado {{ $nowLabel }}</p>
-            </div>
+           
 
             <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 <article class="glass-panel rounded-3xl p-5">

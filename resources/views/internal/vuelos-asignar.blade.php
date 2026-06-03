@@ -11,12 +11,7 @@
                 'subtitle' => 'Asigna personal a vuelos y gestiona roles operativos.',
             ])
         @endsection
-        <div>
-            @include('shared.page-title', [
-                'label' => 'Asignación',
-                'title' => 'Asignar tripulación al vuelo ' . ($vuelo->id_vuelo ?? ''),
-            ])
-        </div>
+        
 
         <div class="grid gap-6 lg:grid-cols-[1fr_0.4fr]">
             <div class="glass-panel rounded-4xl p-6">

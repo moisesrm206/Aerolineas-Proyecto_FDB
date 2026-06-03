@@ -11,15 +11,7 @@
                 'subtitle' => 'Crea, edita y asigna tripulación a los vuelos disponibles.',
             ])
         @endsection
-        <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
-            <div>
-                @include('shared.page-title', [
-                    'label' => 'Administración',
-                    'title' => 'Gestión de vuelos',
-                    'subtitle' => 'Crea, edita y asigna tripulación a los vuelos disponibles.',
-                ])
-            </div>
-        </div>
+        
 
         <div class="grid gap-4 lg:grid-cols-[1fr_0.35fr]">
             <div class="glass-panel rounded-4xl p-5 sm:p-6">
@@ -143,14 +135,7 @@
             </div>
 
             <aside class="space-y-6">
-                <section class="glass-panel rounded-4xl p-6">
-                    <p class="section-label">Filtros rápidos</p>
-                    <h2 class="mt-4 text-2xl font-bold text-white">Accesos</h2>
-                    <div class="mt-6 flex flex-wrap gap-3 text-sm">
-                        <a href="{{ route('admin.vuelos.crear') }}" class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-white/75">Crear vuelo</a>
-                        <a href="{{ route('admin.vuelos') }}" class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-white/75">Recargar lista</a>
-                    </div>
-                </section>
+                <
 
                 <section class="glass-panel rounded-4xl p-6">
                     <p class="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">Ayuda rápida</p>

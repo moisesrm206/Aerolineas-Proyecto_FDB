@@ -12,13 +12,7 @@
             ])
         @endsection
         <div class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-            <div>
-                @include('shared.page-title', [
-                    'label' => 'Administración',
-                    'title' => 'Editar vuelo',
-                    'subtitle' => 'Ajusta ruta, aeronave, horario y estado operativo del vuelo sin salir del flujo de administración.',
-                ])
-            </div>
+           
 
             <div class="glass-panel rounded-4xl p-5 sm:p-6">
                 <p class="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-300">Vuelo actual</p>
@@ -57,9 +51,12 @@
                         <label class="block text-sm font-medium text-white/80" for="id_ruta">Ruta</label>
                         <select id="id_ruta" name="id_ruta" class="w-full rounded-2xl border {{ $errors->has('id_ruta') ? 'border-rose-300' : 'border-white/10' }} bg-white/5 px-4 py-3 text-white placeholder:text-white/35 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/30">
                             @foreach($rutas as $ruta)
-                                <option value="{{ $ruta->id_ruta }}" @selected($vuelo->id_ruta == $ruta->id_ruta)>
-                                    Ruta #{{ $ruta->id_ruta }} · {{ $ruta->id_aeropuerto_origen }} → {{ $ruta->id_aeropuerto_destino }}
-                                </option>
+                                    <option value="{{ $ruta->id_ruta }}" {{ old('id_ruta', $vuelo->id_ruta) == $ruta->id_ruta ? 'selected' : '' }}>
+                                        Ruta #{{ $ruta->id_ruta }} ·
+                                        {{ $ruta->aeropuertoOrigen?->codigo_iata ?? 'N/D' }} ({{ $ruta->aeropuertoOrigen?->ciudad ?? 'Sin dato' }})
+                                        →
+                                        {{ $ruta->aeropuertoDestino?->codigo_iata ?? 'N/D' }} ({{ $ruta->aeropuertoDestino?->ciudad ?? 'Sin dato' }})
+                                    </option>
                             @endforeach
                         </select>
                         @error('id_ruta')
@@ -71,9 +68,12 @@
                         <label class="block text-sm font-medium text-white/80" for="id_aeronave">Aeronave</label>
                         <select id="id_aeronave" name="id_aeronave" class="w-full rounded-2xl border {{ $errors->has('id_aeronave') ? 'border-rose-300' : 'border-white/10' }} bg-white/5 px-4 py-3 text-white placeholder:text-white/35 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/30">
                             @foreach($aeronaves as $aeronave)
-                                <option value="{{ $aeronave->id_aeronave }}" @selected($vuelo->id_aeronave == $aeronave->id_aeronave)>
-                                    {{ $aeronave->matricula }}
-                                </option>
+                                   <option value="{{ $aeronave->id_aeronave }}" @selected($vuelo->id_aeronave == $aeronave->id_aeronave)>
+                                       {{ $aeronave->matricula }} ·
+                                       {{ $aeronave->modelo?->fabricante ?? 'N/D' }}
+                                       {{ $aeronave->modelo?->nombre_comercial ?? $aeronave->id_modelo }}
+                                       · Capacidad {{ $aeronave->capacidad_max ?? 'N/D' }}
+                                   </option>
                             @endforeach
                         </select>
                         @error('id_aeronave')

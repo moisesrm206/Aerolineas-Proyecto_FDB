@@ -3,13 +3,13 @@
 @section('title', 'Inicio - AeroControl')
 
 @section('content')
+    @include('shared.page-hero', [
+        'title' => 'Vuela a donde quieras con AeroVuelos',
+        'subtitle' => 'Tarifas, rutas y gestión de viaje en una sola plataforma.',
+    ])
+
     <section class="mx-auto max-w-7xl px-4 pb-16 pt-10 sm:px-6 lg:px-8 lg:pt-14">
-        <div class="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr]">
-            @include('shared.page-title', [
-                'title' => 'Vuela a donde quieras con AeroVuelos',
-                'subtitle' => 'Tarifas, rutas y gestión de viaje en una sola plataforma.',
-            ])
-        </div>
+        
         <div class="grid items-center gap-10 lg:grid-cols-[1.08fr_0.92fr]">
             <div class="space-y-8">
                 <div class="flex flex-col gap-4 sm:flex-row">
@@ -186,7 +186,7 @@
                     Espacio para soporte, contacto o documentación adicional.
                 </p>
                 <div class="mt-8 space-y-4 text-sm text-white/70">
-                    <p>Correo: contacto@aerolineas.com</p>
+                    <p>Correo: contacto@aeronexus.com</p>
                     <p>Teléfono: +34 123 456 789</p>
                     <p>Horario: Lunes a viernes, 8:00 a 18:00</p>
                 </div>

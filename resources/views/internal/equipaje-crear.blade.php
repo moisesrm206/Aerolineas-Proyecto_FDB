@@ -24,19 +24,14 @@
             </div>
         @endif
 
-        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <article class="glass-panel rounded-3xl p-5">
                 <p class="text-sm text-white/55">Etiqueta</p>
                 <p class="mt-2 text-2xl font-bold text-white">Auto generada</p>
                 <p class="mt-2 text-sm text-cyan-300">Se crea al guardar</p>
             </article>
 
-            <article class="glass-panel rounded-3xl p-5">
-                <p class="text-sm text-white/55">Estados</p>
-                <p class="mt-2 text-2xl font-bold text-white">6 opciones</p>
-                <p class="mt-2 text-sm text-amber-300">Para simular seguimiento</p>
-            </article>
-
+            
             <article class="glass-panel rounded-3xl p-5">
                 <p class="text-sm text-white/55">Tipo</p>
                 <p class="mt-2 text-2xl font-bold text-white">Mano / bodega</p>
@@ -149,14 +144,6 @@
             </section>
 
             <aside class="space-y-6">
-                <section class="glass-panel rounded-4xl p-6 sm:p-8">
-                    <p class="section-label">Consejo</p>
-                    <h3 class="mt-3 text-2xl font-semibold text-white">Quién registra el equipaje</h3>
-                    <p class="mt-4 text-sm leading-7 text-white/75">
-                        Lo más lógico es que lo registre operación o check-in, no el pasajero. Así mantienes control sobre la etiqueta, el peso y el estado, y el pasajero solo consulta el seguimiento.
-                    </p>
-                </section>
-
                 <section class="rounded-4xl border border-amber-300/40 bg-[linear-gradient(180deg,rgba(250,204,21,0.18),rgba(255,255,255,0.02))] p-6 sm:p-8">
                     <h3 class="text-2xl font-semibold text-white">Estados recomendados</h3>
                     <ul class="mt-5 space-y-2 text-sm text-white/75">

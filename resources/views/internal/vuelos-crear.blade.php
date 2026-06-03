@@ -11,37 +11,7 @@
                 'subtitle' => 'Define ruta, aeronave y horarios para un nuevo vuelo.',
             ])
         @endsection
-        <div class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-            <div>
-                @include('shared.page-title', [
-                    'label' => 'Administración',
-                    'title' => 'Crear vuelo',
-                    'subtitle' => 'Registra una nueva salida, asigna la ruta y vincula la aeronave desde un formulario más claro y directo.',
-                ])
-            </div>
-
-            <div class="glass-panel rounded-4xl p-5 sm:p-6">
-                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-300">Qué se guarda</p>
-                <div class="mt-4 grid gap-3 sm:grid-cols-2">
-                    <div class="rounded-3xl border border-white/10 bg-white/5 p-4">
-                        <p class="text-sm text-white/55">Ruta</p>
-                        <p class="mt-1 text-lg font-semibold text-white">Origen + destino</p>
-                    </div>
-                    <div class="rounded-3xl border border-white/10 bg-white/5 p-4">
-                        <p class="text-sm text-white/55">Aeronave</p>
-                        <p class="mt-1 text-lg font-semibold text-white">Matrícula activa</p>
-                    </div>
-                    <div class="rounded-3xl border border-white/10 bg-white/5 p-4">
-                        <p class="text-sm text-white/55">Horario</p>
-                        <p class="mt-1 text-lg font-semibold text-white">Salida y llegada</p>
-                    </div>
-                    <div class="rounded-3xl border border-white/10 bg-white/5 p-4">
-                        <p class="text-sm text-white/55">Estado</p>
-                        <p class="mt-1 text-lg font-semibold text-white">Programado</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
 
         <div class="glass-panel rounded-4xl p-6 sm:p-8">
             <form action="{{ route('admin.vuelos.store') }}" method="POST" class="grid gap-6">
@@ -59,7 +29,12 @@
                         <select id="id_ruta" name="id_ruta" class="w-full rounded-2xl border {{ $errors->has('id_ruta') ? 'border-rose-300' : 'border-white/10' }} bg-white/5 px-4 py-3 text-white placeholder:text-white/35 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/30">
                             <option value="">Selecciona una ruta</option>
                             @foreach($rutas as $r)
-                                <option value="{{ $r->id_ruta }}">Ruta #{{ $r->id_ruta }} · {{ $r->id_aeropuerto_origen }} → {{ $r->id_aeropuerto_destino }}</option>
+                                <option value="{{ $r->id_ruta }}">
+                                    Ruta #{{ $r->id_ruta }} ·
+                                    {{ $r->aeropuertoOrigen?->codigo_iata ?? 'N/D' }} ({{ $r->aeropuertoOrigen?->ciudad ?? 'Sin dato' }})
+                                    →
+                                    {{ $r->aeropuertoDestino?->codigo_iata ?? 'N/D' }} ({{ $r->aeropuertoDestino?->ciudad ?? 'Sin dato' }})
+                                </option>
                             @endforeach
                         </select>
                         <p class="text-xs text-white/45">Usa la ruta que ya esté creada en la base de datos.</p>
@@ -73,7 +48,12 @@
                         <select id="id_aeronave" name="id_aeronave" class="w-full rounded-2xl border {{ $errors->has('id_aeronave') ? 'border-rose-300' : 'border-white/10' }} bg-white/5 px-4 py-3 text-white placeholder:text-white/35 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/30">
                             <option value="">Selecciona una aeronave</option>
                             @foreach($aeronaves as $a)
-                                <option value="{{ $a->id_aeronave }}">{{ $a->matricula }} — {{ $a->nombre_modelo ?? $a->id_modelo }}</option>
+                                <option value="{{ $a->id_aeronave }}">
+                                    {{ $a->matricula }} ·
+                                    {{ $a->modelo?->fabricante ?? 'N/D' }}
+                                    {{ $a->modelo?->nombre_comercial ?? $a->id_modelo }}
+                                    · Capacidad {{ $a->capacidad_max ?? 'N/D' }}
+                                </option>
                             @endforeach
                         </select>
                         <p class="text-xs text-white/45">Solo puedes asignar aeronaves ya registradas.</p>

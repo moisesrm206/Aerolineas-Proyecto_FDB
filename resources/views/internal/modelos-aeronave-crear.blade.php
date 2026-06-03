@@ -12,14 +12,6 @@
             ])
         @endsection
         <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
-            <div>
-                @include('shared.page-title', [
-                    'label' => 'Catálogo',
-                    'title' => 'Nuevo modelo de aeronave',
-                    'subtitle' => 'Registra fabricantes, nombres comerciales y autonomía para reutilizarlos al crear aeronaves.',
-                ])
-            </div>
-
             <div class="flex flex-wrap gap-3 lg:justify-end">
                 <a href="{{ route('admin.aeronaves') }}" class="outline-button inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold transition duration-300">
                     <ion-icon name="arrow-back-sharp"></ion-icon>

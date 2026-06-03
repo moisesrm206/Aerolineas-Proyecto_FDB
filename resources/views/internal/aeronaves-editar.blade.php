@@ -5,14 +5,7 @@
 @section('content')
     <section class="space-y-8">
         <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
-            <div>
-                @include('shared.page-title', [
-                    'label' => 'Acceso administrativo',
-                    'title' => 'Editar aeronave',
-                    'subtitle' => 'Actualiza la matrícula, la capacidad y el modelo asociado de esta aeronave.',
-                ])
-            </div>
-
+           
             <div class="flex flex-wrap gap-3 lg:justify-end">
                 <a href="{{ route('admin.aeronaves') }}" class="outline-button inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold transition duration-300">
                     <ion-icon name="arrow-back-sharp"></ion-icon>

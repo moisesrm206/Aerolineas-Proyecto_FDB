@@ -23,13 +23,7 @@
             </div>
         @endif
 
-        <div class="space-y-3 sm:space-y-4">
-            <div>
-                @include('shared.page-title', [
-                    'label' => 'Gestión de reservas',
-                    'title' => 'Mis Reservas',
-                ])
-            </div>
+        <div class="space-y-3 sm:space-y-4">            
 
             <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.5rem; width:100%; text-align:center;" class="sm:gap-4">
                 <div class="glass-panel min-w-0 rounded-3xl px-3 py-3 sm:rounded-3xl sm:px-5 sm:py-4">
