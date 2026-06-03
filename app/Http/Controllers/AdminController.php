@@ -472,8 +472,18 @@ class AdminController extends Controller
         abort_unless(Auth::user() && Auth::user()->rol === 'admin', 403);
 
         return view('internal.vuelos-crear', [
-            'rutas' => Ruta::all()->sortBy('id_ruta')->values(),
-            'aeronaves' => Aeronave::all()->sortBy('matricula')->values(),
+            'rutas' => Ruta::query()
+                ->with([
+                    'aeropuertoOrigen:id_aeropuerto,codigo_iata,ciudad',
+                    'aeropuertoDestino:id_aeropuerto,codigo_iata,ciudad',
+                ])
+                ->orderBy('id_ruta')
+                ->get(),
+            'aeronaves' => Aeronave::query()
+                ->select(['id_aeronave', 'id_modelo', 'matricula', 'capacidad_max'])
+                ->with(['modelo:id_modelo,fabricante,nombre_comercial'])
+                ->orderBy('matricula')
+                ->get(),
         ]);
     }
 
@@ -487,8 +497,19 @@ class AdminController extends Controller
 
         return view('internal.vuelos-editar', [
             'vuelo' => $vuelo,
-            'rutas' => Ruta::query()->select(['id_ruta', 'id_aeropuerto_origen', 'id_aeropuerto_destino'])->orderBy('id_ruta')->get(),
-            'aeronaves' => Aeronave::query()->select(['id_aeronave', 'matricula', 'id_modelo'])->orderBy('matricula')->get(),
+            'rutas' => Ruta::query()
+                ->select(['id_ruta', 'id_aeropuerto_origen', 'id_aeropuerto_destino'])
+                ->with([
+                    'aeropuertoOrigen:id_aeropuerto,codigo_iata,ciudad',
+                    'aeropuertoDestino:id_aeropuerto,codigo_iata,ciudad',
+                ])
+                ->orderBy('id_ruta')
+                ->get(),
+            'aeronaves' => Aeronave::query()
+                ->select(['id_aeronave', 'id_modelo', 'matricula', 'capacidad_max'])
+                ->with(['modelo:id_modelo,fabricante,nombre_comercial'])
+                ->orderBy('matricula')
+                ->get(),
         ]);
     }
 
