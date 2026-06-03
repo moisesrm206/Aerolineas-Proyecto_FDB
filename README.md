@@ -21,7 +21,7 @@ Aplicación web de gestión para una aerolínea desarrollada con Laravel. Incluy
 1. Clona el repositorio:
 
     git clone <url-del-repo>
-    cd Aerolineas-Proyecto_FDB
+    cd aeronexus
 
 2. Instala dependencias de PHP y frontend:
 
